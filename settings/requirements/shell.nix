@@ -91,9 +91,7 @@ let
         ];
     };
     
-    subDepedencies = [
-        definitions.mainPackages.nodePackages.fkill-cli
-    ] ++ majorCustomDependencies.python;
+    subDepedencies = [] ++ majorCustomDependencies.python;
     
     # TODO: add support for the simple_nix.json to have OS-specific packages (if statement inside package inclusion)
     packagesForMacOnly = [] ++ definitions.mainPackages.lib.optionals (definitions.mainPackages.stdenv.isDarwin) [
@@ -109,9 +107,8 @@ in
         
         # run some bash code before starting up the shell
         shellHook = ''
-        export PROJECTR_FOLDER="$PWD"
-        export PROJECTR_HOME="$PROJECTR_FOLDER/settings/home/"
-        export PROJECTR_COMMANDS_FOLDER="$PROJECTR_FOLDER/settings/commands/"
+        source "$PWD/settings/project.config.sh"
+        
         # we don't want to give nix or other apps our home folder
         if [[ "$HOME" != "$PROJECTR_HOME" ]] 
         then

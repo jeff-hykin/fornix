@@ -5,7 +5,7 @@ DISABLE_UPDATE_PROMPT="true"
 
 # load custom user settings
 # if user just wants to add something (like an export) and not replace everything
-# they should use settings/shell_startup/.dont-sync.exports.sh 
+# they should use settings/setup_automatically/.dont-sync.exports.sh 
 CUSTOM_USER_SETTINGS="./.dont-sync.zshrc"
 if [[ -f "$CUSTOM_USER_SETTINGS" ]]; then
     source "$CUSTOM_USER_SETTINGS"
@@ -13,11 +13,12 @@ if [[ -f "$CUSTOM_USER_SETTINGS" ]]; then
 # if no custom user settings, then use epic defaults 👌
 # 
 else
+    # this shouldnt ever happen, but just encase
     if [[ -z "$PROJECTR_FOLDER" ]]
     then
-        echo PROJECTR_FOLDER is empty
-        export PROJECTR_FOLDER="$PWD"
+        source ./settings/project.config.sh
     fi
+    
     function nix_path_for {
         nix-instantiate --eval -E  '"${
             (
@@ -106,13 +107,5 @@ else
     unalias -m '*' # remove all default aliases
 fi
 
-# 
-# find and run all the startup scripts in alphabetical order
-# 
-for file in "$PROJECTR_FOLDER/settings/shell_startup"/*
-do
-    # make sure its a file
-    if [[ -f "$file" ]]; then
-        source "$file"
-    fi
-done
+# run the automatic non-zsh-specific setup
+source "$PROJECTR_FOLDER/settings/setup_automatically/main.sh"

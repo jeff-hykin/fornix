@@ -1,25 +1,33 @@
 #!/usr/bin/env bash
+source ./settings/project.config.sh
 
-
-# the commands command but for lazy people
-# check if file exists
-
-if [[ -z "$@" ]]
+# 
+# no args
+# 
+if [[ "$#" = "0" ]]
 then
+    # list the available commands
     "$PROJECTR_COMMANDS_FOLDER/project/commands"
+# 
+# otherwise run the respective project command
+# 
 else
+    source "$PROJECTR_FOLDER/settings/setup_manually/main.sh"
     # enable globbing
     shopt -s globstar &>/dev/null
     shopt -s dotglob &>/dev/null
+    
+    # 
+    # recursively drill down
+    # 
     search_path="$PROJECTR_COMMANDS_FOLDER/project"
     argument_combination="$search_path/$1"
     while [[ -n "$@" ]]
     do
+        # pop the first argument off
         shift 1
         for each in "$search_path/"**/*
         do
-            echo 'argument_combination: '"$argument_combination"
-            echo 'each: '"$each"
             if [[ "$argument_combination" = "$each" ]]
             then
                 # if its a folder, then we need to go deeper
@@ -47,7 +55,7 @@ else
             fi
         done
     done
-    printf "\nI could not find that sub command\n" 1>&2
+    printf "\nI could not find that project command\n" 1>&2
     printf "Valid options are:\n" 1>&2
     ls -1 --color -F "$search_path" | sed 's/^/    /' 1>&2
     exit 1 # error, no command
