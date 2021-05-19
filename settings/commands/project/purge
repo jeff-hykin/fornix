@@ -15,10 +15,8 @@ then
     exit 0
 fi
 
-unlink ./Library/Keychains &>/dev/null
-
 # clean all the small things
-"$PROJECTR_FOLDER/settings/commands/clean"
+"$PROJECTR_COMMANDS_FOLDER/project/clean"
 
 # all the node modules
 rm -rfv node_modules
@@ -27,4 +25,7 @@ rm -rfv node_modules
 rm -rfv .venv
 
 # the mac library cache
-rm -rfv "$PROJECTR_FOLDER/settings/home/Library/Caches"
+if [[ -d "$PROJECTR_FOLDER" ]]
+then
+    rm -rfv "$PROJECTR_HOME/Library/Caches"
+fi
