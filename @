@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 export LC_ALL=C.UTF-8        # for replit
-polygott-lang-setup -l nix   # for replit
+# if polygott-lang-setup exists
+if [ -n "$(command -v "polygott-lang-setup")" ]
+then
+    polygott-lang-setup -l nix   # for replit
+fi
 
 # 
 # summary

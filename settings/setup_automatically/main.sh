@@ -7,10 +7,11 @@ shopt -s dotglob &>/dev/null
 # 
 # find and run all the startup scripts in alphabetical order
 # 
-for file in "$PROJECTR_FOLDER/settings/setup_automatically/steps/"*
+find "$PROJECTR_FOLDER/settings/setup_automatically/steps/" -maxdepth 1 ! -path . -print0 | sort -z | while read -d $'\0' each
 do
     # make sure its a file
-    if [[ -f "$file" ]]; then
-        source "$file"
+    if [[ -f "$each" ]]; then
+        echo "loading $each"
+        source "$each"
     fi
 done

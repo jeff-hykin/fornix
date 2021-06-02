@@ -18,10 +18,6 @@ nix_path_for () {
     nix-instantiate --eval -E '"${(import <nixpkgs> {}).'"$1"'}"' | sd '^"' '' | sd '"$' ''
 }
 
-# run the automatic non-zsh-specific setup
-source "$PROJECTR_FOLDER/settings/setup_automatically/main.sh"
-
-
 # 
 # load settings
 # 
@@ -100,3 +96,6 @@ else
     
     unalias -m '*' # remove all default aliases
 fi
+
+# run the automatic non-zsh-specific setup
+source "$PROJECTR_FOLDER/settings/setup_automatically/main.sh"
