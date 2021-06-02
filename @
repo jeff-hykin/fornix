@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-source ./settings/project.config.sh
+export LC_ALL=C.UTF-8        # for replit
+polygott-lang-setup -l nix   # for replit
 
 # 
 # summary
@@ -8,6 +9,8 @@ source ./settings/project.config.sh
 #     it loads the PROJECTR env variables first (./settings/project.config.sh)
 #     then in looks inside the commands folder for commands to run
 #     (unlike the underscore, this does not load the manual environment)
+
+source ./settings/project.config.sh
 
 # 
 # no args

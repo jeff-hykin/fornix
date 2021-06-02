@@ -3,6 +3,29 @@
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
 
+
+# 
+# setup projectr
+# 
+
+# this shouldnt ever happen, but just encase
+if [[ -z "$PROJECTR_FOLDER" ]]
+then
+    source ./settings/project.config.sh
+fi
+
+nix_path_for () {
+    nix-instantiate --eval -E '"${(import <nixpkgs> {}).'"$1"'}"' | sd '^"' '' | sd '"$' ''
+}
+
+# run the automatic non-zsh-specific setup
+source "$PROJECTR_FOLDER/settings/setup_automatically/main.sh"
+
+
+# 
+# load settings
+# 
+
 # load custom user settings
 # if user just wants to add something (like an export) and not replace everything
 # they should use settings/setup_automatically/.dont-sync.exports.sh 
@@ -13,35 +36,6 @@ if [[ -f "$CUSTOM_USER_SETTINGS" ]]; then
 # if no custom user settings, then use epic defaults 👌
 # 
 else
-    # this shouldnt ever happen, but just encase
-    if [[ -z "$PROJECTR_FOLDER" ]]
-    then
-        source ./settings/project.config.sh
-    fi
-    
-    function nix_path_for {
-        nix-instantiate --eval -E  '"${
-            (
-                builtins.elemAt (
-                    builtins.filter (each: each.name == "'$1'") (
-                        builtins.map (
-                            each: ({
-                                name = each.load;
-                                source = builtins.getAttr each.load (
-                                    builtins.import (
-                                        builtins.fetchTarball {url="https://github.com/NixOS/nixpkgs/archive/${each.from}.tar.gz";}
-                                    ) {
-                                        config = (builtins.fromJSON (builtins.readFile "'"$PROJECTR_FOLDER"'/settings/requirements/nix.json")).nix.config;
-                                    }
-                                );
-                            })
-                        ) (builtins.fromJSON (builtins.readFile "'"$PROJECTR_FOLDER"'/settings/requirements/nix.json")).nix.packages
-                    )
-                ) 0
-            ).source
-        }"' | sed -E 's/^"|"$//g'
-    }
-    
     # 
     # import paths from nix
     # 
@@ -106,6 +100,3 @@ else
     
     unalias -m '*' # remove all default aliases
 fi
-
-# run the automatic non-zsh-specific setup
-source "$PROJECTR_FOLDER/settings/setup_automatically/main.sh"
