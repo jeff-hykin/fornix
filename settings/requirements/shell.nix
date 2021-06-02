@@ -100,7 +100,7 @@ pkgs.mkShell {
             # so make the home folder the same as the project folder
             export HOME="$PROJECTR_HOME"
             # make nix work
-            export NIX_PATH="nixpkgs=/nix/var/nix/profiles/per-user/root/channels/nixpkgs:/nix/var/nix/profiles/per-user/root/channels:."
+            export NIX_PATH="/home/runner/.nix-defexpr/channels"
         fi
     '';
 }

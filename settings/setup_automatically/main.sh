@@ -11,7 +11,6 @@ find "$PROJECTR_FOLDER/settings/setup_automatically/steps/" -maxdepth 1 ! -path 
 do
     # make sure its a file
     if [[ -f "$each" ]]; then
-        echo "loading $each"
         source "$each"
     fi
 done
