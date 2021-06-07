@@ -1,0 +1,1 @@
+@ projectr/add_external_command "logger"

@@ -1,0 +1,70 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p bash_5 -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/046f8835dcb9082beb75bb471c28c832e1b067b6.tar.gz
+
+
+# the comments above^ are special
+#   they tell the system to process this using nix-shell
+#   specifically using the exact version of bash to use
+
+
+# 
+# find projectr entrypoint
+# 
+# (thanks to bash/shells theres no reliable way for a file to get a path to itself)
+# (see http://mywiki.wooledge.org/BashFAQ/028)
+# REF: fj3508ht32vlr58
+key_path='settings/#system/#@'
+projectr_entrypoint="$PWD"
+search_path="$PWD"
+while true
+do
+    # check if file exists
+    if [ -f "$search_path/$key_path" ]
+    then
+        # if so, then thats what needs to be loaded
+        projectr_entrypoint="$search_path/$key_path"
+        break
+    else
+        # if not, and we have nowhere else to go, then we didn't find the project
+        next_search_path="$(dirname "$search_path")"
+        if [ "$next_search_path" = "$search_path" ]
+        then
+            echo "" 1>&2
+            echo "I started at: $PWD" 1>&2
+            echo "I looked for ./$key_path" 1>&2
+            echo "I went up a folder and repeated the process" 1>&2
+            echo "But I was unable to find the project at any level" 1>&2
+            exit 1
+        # otherwise just go up a folder
+        else
+            search_path="$next_search_path"
+        fi
+    fi
+done
+source "$projectr_entrypoint" # sets up @ and PROJECTR_FOLDER
+
+# 
+# process arguments (for future functionality)
+# 
+start_arguments=""
+# for each argument (in a argument-might-have-spaces friendly way)
+index=-1 ; while [ "$index" -lt $# ]; do
+    index=$((index+1))
+    arg="$1"
+    shift 1
+    
+    # stop after the -- is reached
+    if [ "$arg" = "--" ]
+    then
+        break
+    fi
+    # otherwise escape and save the arguments for later
+    start_arguments="$start_arguments $(@ string/escape_shell_argument "$arg")"
+done
+
+# 
+# start the default shell
+# 
+@ projectr/is_not_in_shell && {
+    @ projectr/trigger_default_shell_start
+}

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+    echo "project:"
+    tree "$PROJECTR_COMMANDS_FOLDER/project" -C --dirsfirst -A -F --noreport | sed 's/^/    /' | sed "1d"
+    echo 
+    echo "example commads:"
+    echo "    project clean"
+    echo "    project purge"
+    echo "    _ clean"
+    echo "    _ purge"
+    

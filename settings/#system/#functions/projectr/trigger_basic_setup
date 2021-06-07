@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+@ file_system/source_all "$PROJECTR_FOLDER/"'settings/#events/#setup/@#basic_setup'

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# summary
+#   this just removes all of the can-be deleted files
+#   can be useful for fixing corrupted setups
+
+# run all the scripts listening for the cleaning event
+@ file_system/source_all "$PROJECTR_COMMANDS_FOLDER/#events/project/clean"

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+__temp_var__regular_ignore_file="$PROJECTR_FOLDER/.gitignore"
+__temp_var__nested_ignore_file="$PROJECTR_HOME/.config/git/ignore"
+
+# if the regular file exists, then prefer it
+if [ -f "$__temp_var__regular_ignore_file" ]
+then
+    printf '%s' "$__temp_var__regular_ignore_file"
+# otherwise go with the nested ignore file
+elif [ -f "$__temp_var__nested_ignore_file" ] 
+then
+    printf '%s' "$__temp_var__nested_ignore_file"
+# if neither exist, then create the hidden gitignore
+else
+    @ file_system/ensure_file "$__temp_var__nested_ignore_file"
+    printf '%s' "$__temp_var__nested_ignore_file"
+fi
+
+unset __temp_var__nested_ignore_file
+unset __temp_var__regular_ignore_file

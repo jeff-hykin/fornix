@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# 
+# git
+# 
+PROJECTR_GIT_FOLDER="$PROJECTR_FOLDER/settings/git/"
+mkdir -p "$PROJECTR_GIT_FOLDER"
+# if the project config exists in home steal it
+if [ -f "$PROJECTR_FOLDER/home/.gitconfig" ]
+then
+    # check if file exists
+    if ! [ -f "$PROJECTR_GIT_FOLDER/config.ini" ]
+    then
+        mv "$PROJECTR_FOLDER/home/.gitconfig" "$PROJECTR_GIT_FOLDER/config.ini" 
+        # systemlink back
+        ln -s "$PROJECTR_GIT_FOLDER/config.ini" "$PROJECTR_FOLDER/home/.gitconfig"
+    fi
+fi
+
+# 
+# copy .gitconfig to home.do_not_sync
+# 
+@ projectr/is_not_in_shell && {
+    if ! [ -f "$PROJECTR_FOLDER/home.do_not_sync/.gitconfig" ] {
+        # check if file exists
+        if [ -f "$HOME/.gitignore" ]
+        then
+            cp "$HOME/.gitignore" "$PROJECTR_FOLDER/home.do_not_sync/.gitconfig"
+        fi
+    }
+}
+
+# 
+# git.do_not_sync/config.local
+# 
+
+# just link this to the local git config
+mkdir -p "$PROJECTR_GIT_FOLDER.do_not_sync"
+if [ -f "$PROJECTR_FOLDER/.git/config" ] # TODO: add detection for a .git folder in a different location
+then
+    ln -s "$PROJECTR_FOLDER/.git/config" "$PROJECTR_GIT_FOLDER.do_not_sync/config.local.ini"
+fi
+
+# just link this to the home.do_not_sync git config
+if [ -f "$PROJECTR_FOLDER/home.do_not_sync/.gitconfig" ] # TODO: add detection for a .git folder in a different location
+then
+    ln -s "$PROJECTR_FOLDER/home.do_not_sync/.gitconfig" "$PROJECTR_GIT_FOLDER.do_not_sync/config.global.ini"
+fi
+
+# if there's no pull setting, then add it to the project
+git config pull.rebase &>/dev/null || git config pull.ff &>/dev/null || git config --add pull.rebase false &>/dev/null

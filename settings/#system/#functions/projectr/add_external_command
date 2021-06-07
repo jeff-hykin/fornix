@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+__temp_var__command_name="$1"
+__temp_var__system_path="$(which "$1" 2>/dev/null)"
+
+# if the argument is not a command name
+if ! [ -f "$__temp_var__system_path" ]
+then
+    # if the name is actually a full path
+    if [ -f "$__temp_var__command_name" ]
+    then
+        # then use that path
+        __temp_var__system_path="$(@ file_system/absolute_path "$__temp_var__command_name")"
+        __temp_var__command_name="$(basename "$__temp_var__system_path")"
+    fi
+fi
+
+# make sure its a file
+if [ -f "$__temp_var__system_path" ]; then
+
+    # 
+    # create the link to it 
+    # 
+    __temp_var__path_injection_folder="$PROJECTR_TEMPORARY_FOLDER/path_injection/"
+    
+    # ensure the parent folder exists
+    mkdir -p "$__temp_var__path_injection_folder"
+    # if were not inside the shell, then we can inject into the path
+    @ projectr/is_not_in_shell && {
+        __temp_var__exeutable_path="$__temp_var__path_injection_folder/$__temp_var__command_name"
+        __temp_var__escaped_home="$(@ string/escape_shell_argument "$HOME")"
+        __temp_var__escaped_system_path="$(@ string/escape_shell_argument "$__temp_var__system_path")"
+        
+        # use this rather than a hard link or system link
+        # because we want to preserver the HOME variable
+        echo "
+            #!/usr/bin/env bash
+            HOME=$__temp_var__escaped_home '$__temp_var__escaped_system_path' \"\$@\"
+        " > "$__temp_var__exeutable_path"
+        # make sure its runnable
+        @ file_system/ensure_executable "$__temp_var__exeutable_path"
+        
+        unset __temp_var__exeutable_path
+        unset __temp_var__escaped_home
+        unset __temp_var__escaped_system_path
+        
+    }
+    
+else 
+    echo "no system '$1' avalible for path injection (some stuff might break)" 1>&2
+fi
+
+unset __temp_var__path_injection_folder
+unset __temp_var__command_name
+unset __temp_var__system_path

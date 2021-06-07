@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+__temp_var__home="$(@ file_system/absolute_path "$HOME")"
+__temp_var__projectr_home="$(@ file_system/absolute_path "$PROJECTR_HOME")"
+
+# if the home's are the same then we're inside the shell
+if [ "$__temp_var__home" = "$__temp_var__projectr_home" ]
+then
+    unset __temp_var__projectr_home
+    unset __temp_var__home
+    return 1
+else
+    return 0
+fi

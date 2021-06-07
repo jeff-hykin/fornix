@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# these (the PROJECTR_FOLDER and @ function) are the only things guarenteed to exist during projectr setup
+# the PROJECTR_FOLDER var makes it so commands don't have to constantly find themselves 
+# the @ function is used to safely and easily run functions saved inside settings/#system/#functions
+# example: @ git/ignore "ssh_private_keys"
+
+# 
+# find this file
+# 
+# (thanks to bash/shells theres no reliable way for a file to get a path to itself)
+# (see http://mywiki.wooledge.org/BashFAQ/028)
+# REF: fj3508ht32vlr58
+key_path='settings/#system/#@'
+projectr_entrypoint="$PWD"
+search_path="$PWD"
+while true
+do
+    # check if file exists
+    if [ -f "$search_path/$key_path" ]
+    then
+        # if so, then thats what needs to be loaded
+        projectr_entrypoint="$search_path/$key_path"
+        break
+    else
+        # if not, and we have nowhere else to go, then we didn't find the project
+        next_search_path="$(dirname "$search_path")"
+        if [ "$next_search_path" = "$search_path" ]
+        then
+            echo "" 1>&2
+            echo "I started at: $PWD" 1>&2
+            echo "I looked for ./$key_path" 1>&2
+            echo "I went up a folder and repeated the process" 1>&2
+            echo "But I was unable to find the project at any level" 1>&2
+            exit 1
+        # otherwise just go up a folder
+        else
+            search_path="$next_search_path"
+        fi
+    fi
+done
+
+# if builtin exists
+if [ -n "$(command -v "builtin")" ]
+then
+    # convert to abosolute path
+    export PROJECTR_FOLDER="$(builtin cd "$(dirname "$projectr_entrypoint")/.."; pwd)"
+else
+    # convert to abosolute path
+    export PROJECTR_FOLDER="$(cd "$(dirname "$projectr_entrypoint")/.."; pwd)"
+fi
+
+
+@ () {
+    __temp_var__which_file=""
+    __temp_var__shell_name="$(basename "$SHELL")"
+    if [ "$__temp_var__shell_name" = "bash" ]
+    then
+        __temp_var__which_file="$FUNCNAME"
+    elif [ "$__temp_var__shell_name" = "zsh" ]
+    then
+        __temp_var__which_file="$(builtin print -rl -- "$funcstack[1]")"
+    fi
+    __temp_var__which_function_path="$PROJECTR_FOLDER"'/settings/#system/#functions/'"$1"
+    shift 1
+    # check if file exists
+    if [ -f "$__temp_var__which_function_path" ]
+    then
+        # run the function
+        source "$__temp_var__which_function_path" "$@"
+    else
+        # if we know what file it came from (bash or zsh)
+        if [ -n "$__temp_var__which_file" ]
+        then
+            echo "this file: $__temp_var__which_file" 1>&2
+            echo "tried to use this function: $__temp_var__which_function_path" 1>&2
+            echo "but the file for that function didn't exist" 1>&2
+        fi
+    fi
+    unset __temp_var__which_function_path
+    unset __temp_var__shell_name
+    unset __temp_var__which_file
+}

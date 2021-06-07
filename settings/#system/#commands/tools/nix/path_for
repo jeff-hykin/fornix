@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+nix_path_for () {
+    __temp_var__nix_config_name="$(basename "$NIX_PROJECTR_CONFIG_SOURCE")"
+    printf '%s' "$(
+        cd "$(dirname "$NIX_PROJECTR_CONFIG_SOURCE")"
+        # TODO: still needs one more level (the nix level) of escape for the injected variable
+        nix-instantiate --eval -E  '"${
+            (
+                builtins.elemAt (
+                    builtins.filter (each: each.name == "'$1'") (
+                        builtins.map (
+                            each: ({
+                                name = each.load;
+                                source = builtins.getAttr each.load (
+                                    builtins.import (
+                                        builtins.fetchTarball {url="https://github.com/NixOS/nixpkgs/archive/${each.from}.tar.gz";}
+                                    ) {
+                                        config = (builtins.fromJSON (builtins.readFile "'"$__temp_var__nix_config_name"'")).nix.config;
+                                    }
+                                );
+                            })
+                        ) (builtins.fromJSON (builtins.readFile "'"$__temp_var__nix_config_name"'")).nix.packages
+                    )
+                ) 0
+            ).source
+        }"' | sed -E 's/^"|"$//g'
+    )"
+    unset __temp_var__nix_config_name
+}
+nix_path_for "$@"

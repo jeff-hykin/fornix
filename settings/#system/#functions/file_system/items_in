@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+find "$*" -maxdepth 1 ! -path . -print0 2>/dev/null | sort -z

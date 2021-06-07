@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+mkdir -p "$PROJECTR_HOME"
+
+# 
+# settings/home
+# 
+mkdir -p "$PROJECTR_FOLDER/settings/home"
+find "$PROJECTR_FOLDER/settings/home" -maxdepth 1 ! -path . -print0 2>/dev/null | sort -z | while read -d "$(printf '\0')" each
+do
+    file="$(basename $each)"
+    # remove anything in the way
+    @ file_system/delete "$PROJECTR_HOME/$file"
+    # system link the one created inside home
+    # TODO: make this a relative link
+    ln -s "$each" "$PROJECTR_HOME/$file"
+done
+
+# 
+# settings/home.do_not_sync
+# 
+mkdir -p "$PROJECTR_FOLDER/settings/home.do_not_sync"
+find "$PROJECTR_FOLDER/settings/home.do_not_sync" -maxdepth 1 ! -path . -print0 2>/dev/null | sort -z | while read -d "$(printf '\0')" each
+do
+    file="$(basename $each)"
+    # remove anything in the way
+    @ file_system/delete "$PROJECTR_HOME/$file"
+    # system link the one created inside home
+    # TODO: make this a relative link
+    ln -s "$each" "$PROJECTR_HOME/$file"
+done
+unset file

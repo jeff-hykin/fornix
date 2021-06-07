@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+newline='
+'
+__temp_var__ignore_file="$(@ "git/which_ignore")"
+__temp_var__additional_lines=""
+
+# for each argument (in a argument-might-have-spaces friendly way)
+index=-1 ; while [ "$index" -lt $# ]; do
+    index=$((index+1))
+    arg="$1"
+    shift 1
+    
+    __temp_var__thing_to_ignore="$(@ file_system/project_path_for "$arg")"
+    __temp_var__escaped_name="$(@ string/escape_grep_regex "$__temp_var__thing_to_ignore")"
+    
+    
+    # if it wasn't in the ignore already
+    grep -E -- "$__temp_var__escaped_name$" "$__temp_var__ignore_file" || {
+        # if havent added any ignores yet
+        if [ -z "$__temp_var__additional_lines" ]
+        then
+            # add the start message
+            __temp_var__additional_lines="$__temp_var__additional_lines${newline}# these lines were auto-added and may be very important (passwords/auth etc)"
+            __temp_var__additional_lines="$__temp_var__additional_lines${newline}# comment it out if you know what you're doing and dont want it to be ignored"
+            __temp_var__additional_lines="$__temp_var__additional_lines${newline}# [start auto-ignore]"
+        fi
+        # add the file that needs to be ignored
+        __temp_var__additional_lines="$__temp_var__additional_lines${newline}$__temp_var__thing_to_ignore"
+    }
+done
+# if something was added then
+if [ -n "$__temp_var__additional_lines" ]
+then
+    # add the closing statement
+    __temp_var__additional_lines="$__temp_var__additional_lines${newline}# [end auto-ignore]"
+    # append it to the ignore file
+    echo "$__temp_var__additional_lines" >> "$__temp_var__ignore_file"
+fi
+
+unset __temp_var__additional_lines
+unset __temp_var__escaped_name
+unset __temp_var__thing_to_ignore
+unset index
