@@ -6,8 +6,10 @@
 # 
 # standard
 # 
-**/*.dont-sync
-**/*.dont-sync.*
+**/*.ignore
+**/*.ignore.*
+**/*.do_not_sync
+**/*.do_not_sync.*
 
 # 
 # Linux

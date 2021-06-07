@@ -2,16 +2,23 @@
     - SSL fix, use nix-shell with pinned values for an SSL cert fix
     - have the start script not use nix-shell so that nix-shell can be detected
     - change all the places that use PROJECTR_FOLDER because it now includes /settings
-    - add projectr/trigger "#setup/@#default_shell_start"
     - add @ projectr/refresh_settings that system links everything into the right place:
+        - create file_system/link_merge (creates folders as needed, always system links files)
         - detect and delete broken system links
+        - find "#add_events"
+        - find "#add_commands"
+        - find "#add_functions"
+    - add projectr/trigger "#setup/@#default_shell_start"
     - ignores:
         - provide a better way to add a bunch of ignores (multiline, maybe use git/ignore_multiple)
         - auto-add projectr ignores (.do_not_sync, .ignore, .private)
     - "#home":
-        - add a means for plugins to copy existing home folder stuff (creates "#home/thing.private")
-        - add a means for plugins to link their files (synced or unsynced) "#add#home/thing.private" or "#add#home/thing.public"
-    - "#refresh"
+        - have refresh settings find "#init_from_users_home" (copy once into "#home/thing.private")
+        - have refresh settings find "#add_home" check that they are all .private or .public (link into "#home")
+        - add "#home/*.private" to projectr ignore
+        - add a refresh home event:
+            - sym link and rename each thing inside of "#home"
+    - create all the "#refresh" events
         - commands
         - gitignore
         - home
