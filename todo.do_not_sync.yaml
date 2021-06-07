@@ -1,0 +1,51 @@
+- main:
+    - SSL fix, use nix-shell with pinned values for an SSL cert fix
+    - have the start script not use nix-shell so that nix-shell can be detected
+    - change all the places that use PROJECTR_FOLDER because it now includes /settings
+    - add projectr/trigger "#setup/@#default_shell_start"
+    - add @ projectr/refresh_settings that system links everything into the right place:
+        - detect and delete broken system links
+    - ignores:
+        - provide a better way to add a bunch of ignores (multiline, maybe use git/ignore_multiple)
+        - auto-add projectr ignores (.do_not_sync, .ignore, .private)
+    - "#home":
+        - add a means for plugins to copy existing home folder stuff (creates "#home/thing.private")
+        - add a means for plugins to link their files (synced or unsynced) "#add#home/thing.private" or "#add#home/thing.public"
+    - "#refresh"
+        - commands
+        - gitignore
+        - home
+        - settings
+        - env vars
+    - finish converting the automatic setup steps:
+        - only use PROJECTR_FOLDER (in shell_preferences)
+        - update the shell for loops, no globbing (refresh_commands)
+        - search for FIXME
+    - clean up or remove the "commmands" function
+    - change the git config refresh
+        - copy in home folder using "#home" interface
+        - link to local config
+        - somehow do a project config (merge with local config?)
+    - update the default hash
+    - 
+    - make @#start_default_shell code run with a standard nix bash and friends (grep, sed, git, etc)
+    - commands/run
+    - create a minimal projectr branch
+    - commands/help
+    - make an easy way to generate relative system links
+    - add an automatic renumbering system to @ projectr/refresh_settings
+    - documentation: what makes the functions different from commands
+    - nix.yaml and @ projectr/refresh_nix
+    - use GIT_ALTERNATE_OBJECT_DIRECTORIES to limit data duplication
+    - add a secrets plugin that accepts a password, and then encrypts/decrypts a folder with it
+    - add some kind of official settings registry
+    
+- python:
+    - git ignore
+    - move install stuff to refresh
+    - add the python fixes from reinforcement_playground:
+        - tempdir
+        - SSL fix
+    - update to python38
+    - eventually switch to poetry, generate requirements.txt from poetry lock
+    - make the checks and hooks use the ./settings/setup_manually/auto_detect.sh or walk-up-tree method

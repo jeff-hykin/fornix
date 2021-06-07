@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+ls -lAF -h --reverse --group-directories-first --color "$@" | tac

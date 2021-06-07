@@ -6,10 +6,8 @@
 # 
 # standard
 # 
-**/*.do_not_sync
-**/*.do_not_sync.*
-**/*.ignore
-**/*.ignore.*
+**/*.dont-sync
+**/*.dont-sync.*
 
 # 
 # Linux
@@ -157,6 +155,7 @@ bh_unicode_properties.cache
 # https://packagecontrol.io/packages/sublime-github
 GitHub.sublime-settings
 
+
 # 
 # X Code
 # 
@@ -189,3 +188,30 @@ DerivedData/
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
+
+#
+# home folder files
+#
+# ignore files in folder foo
+settings/path_injection/*
+# but keep the folder
+!settings/path_injection/.keep
+# ignore files in folder foo
+settings/.cache/*
+# but keep the folder
+settings/home/*
+!settings/.cache/.keep
+!settings/home/.zshrc
+!settings/home/.zshenv
+settings/home/Library/Caches
+# dont remove these next one unless you want passwords to be public
+# these are redundant, but kept as a fail-safe
+settings/home/Library/Keychains
+settings/home/.gnupg
+settings/home/.gnupg_pre_2.1
+settings/home/.npmrc
+settings/home/.vsce
+settings/home/.gitconfig
+settings/home/.mongorc.js
+settings/home/.ungitrc
+settings/home/.vuerc

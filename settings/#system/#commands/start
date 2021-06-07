@@ -1,8 +1,7 @@
 #! /usr/bin/env nix-shell
 #! nix-shell -i bash -p bash_5 -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/046f8835dcb9082beb75bb471c28c832e1b067b6.tar.gz
 
-
-# the comments above^ are special
+# the #! comments above^ are special
 #   they tell the system to process this using nix-shell
 #   specifically using the exact version of bash to use
 
@@ -63,7 +62,7 @@ index=-1 ; while [ "$index" -lt $# ]; do
 done
 
 # 
-# start the default shell
+# start the default shell (settings/#events/#setup)
 # 
 @ projectr/is_not_in_shell && {
     @ projectr/trigger_default_shell_start
