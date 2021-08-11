@@ -28,3 +28,12 @@ rm -f "$PROJECTR_FOLDER/commands/tools/java" 2>/dev/null
 rm -rf "$PROJECTR_FOLDER/commands/tools/java" 2>/dev/null
 # syslink local tools
 ln -s "../../settings/extensions/java/commands" "$PROJECTR_FOLDER/commands/tools/java"
+
+
+# 
+# add to git ignore
+# 
+if [ -f "$PROJECTR_FOLDER/settings/extensions/git/commands/ignore" ]
+then
+    "$PROJECTR_FOLDER/settings/extensions/git/commands/ignore" "**/*.class"
+fi

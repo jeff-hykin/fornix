@@ -622,3 +622,8 @@ settings/home/.gitconfig
 settings/home/.mongorc.js
 settings/home/.ungitrc
 settings/home/.vuerc
+# these lines were auto-added and may be very important (passwords/auth etc)
+# comment it out if you know what you're doing and dont want it to be ignored
+# [start auto-ignore]
+**/*.class
+# [end auto-ignore]

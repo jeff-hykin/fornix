@@ -75,3 +75,14 @@ then
         chmod ugo+x "$git_file" &>/dev/null || sudo chmod ugo+x "$git_file"
     done
 fi
+
+
+
+# 
+# connect commands
+# 
+# unlink existing
+rm -f "$PROJECTR_FOLDER/commands/tools/git" 2>/dev/null
+rm -rf "$PROJECTR_FOLDER/commands/tools/git" 2>/dev/null
+# syslink local tools
+ln -s "../../settings/extensions/git/commands" "$PROJECTR_FOLDER/commands/tools/git"
