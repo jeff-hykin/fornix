@@ -52,6 +52,14 @@
 # to a minimal server that doesn't need C/C++ build tools
 
 # 
+# 
+# Java
+# 
+# 
+[[packages]]
+load = [ "jdk",]
+
+# 
 # Linux
 # 
 [[packages]]
