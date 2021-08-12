@@ -7,7 +7,7 @@
 rm -f "$PROJECTR_FOLDER/settings/when_cleaning/811_java.sh" 2>/dev/null
 rm -rf "$PROJECTR_FOLDER/settings/when_cleaning/811_java.sh" 2>/dev/null
 # syslink when_cleaning
-ln -s "../extensions/java/when_cleaning.sh" "$PROJECTR_FOLDER/settings/when_cleaning/811_java.sh"
+ln -s "../extensions/java/commands/clean" "$PROJECTR_FOLDER/settings/when_cleaning/811_java.sh"
 
 
 # 

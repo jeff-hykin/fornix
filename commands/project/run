@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# enable globbing
+shopt -s globstar &>/dev/null
+shopt -s dotglob &>/dev/null
+"$PROJECTR_FOLDER/settings/extensions/java/commands/clean" 2>/dev/null 1>/dev/null
+javac -cp "$PROJECTR_FOLDER/main" "$PROJECTR_FOLDER/main/"**/*.java && java -cp "$PROJECTR_FOLDER/main" Main

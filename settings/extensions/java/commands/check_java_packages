@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # main inputs
 __temp_var__command_name="tools/java/check_java_modules"
 # TODO: add java package manager here

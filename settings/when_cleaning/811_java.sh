@@ -1,1 +1,1 @@
-../extensions/java/when_cleaning.sh
+../extensions/java/commands/clean
