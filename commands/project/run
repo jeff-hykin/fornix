@@ -7,6 +7,7 @@ then
     echo ""
     first_argument="$FORNIX_FOLDER/main/main.pl"
 fi
+shift
 
 # prolog command
-swipl -q --stand_alone=true -c "$first_argument"
+swipl -q -c "$first_argument" "$@"
