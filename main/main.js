@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const ezElectron = require("../tools/ezElectron")
+const ezElectron = require("./tools/ezElectron")
 const electron = require("electron")
 
 ezElectron.when = {

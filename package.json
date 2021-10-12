@@ -1,27 +1,43 @@
 {
-  "dependencies": {
-    "mime-types": "^2.1.32"
-  },
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.61",
-    "electron": "^15.1.2"
-  },
-  "name": "fornix",
-  "description": "Everything is detailed in the `documentation/setup.md`!",
-  "version": "1.0.0",
-  "main": "main/main.js",
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeff-hykin/fornix.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/jeff-hykin/fornix/issues"
-  },
-  "homepage": "https://github.com/jeff-hykin/fornix#readme"
+    "build": {
+        "appId": "com.electron.YOUR_APP",
+        "productName": "YOUR_APP",
+        "mac": {
+            "category": "public.app-category.developer-tools",
+            "icon": "main/icons/fiddle.icns",
+            "target": "zip",
+            "asar": false,
+            "hardenedRuntime": false,
+            "compression": "store",
+            "files": [
+                "!**/*",
+                "main/**/*"
+            ]
+        }
+    },
+    "dependencies": {
+        "mime-types": "^2.1.32"
+    },
+    "devDependencies": {
+        "electron": "^15.1.2",
+        "electron-builder": "20.44.4"
+    },
+    "name": "fornix",
+    "description": "Everything is detailed in the `documentation/setup.md`!",
+    "version": "1.0.0",
+    "main": "main/main.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jeff-hykin/fornix.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/jeff-hykin/fornix/issues"
+    },
+    "homepage": "https://github.com/jeff-hykin/fornix#readme"
 }

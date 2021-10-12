@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [ "$(uname)" = "Darwin" ] && [ -z "$CSC_IDENTITY_AUTO_DISCOVERY" ]
+then
+    # only way to disable code signing
+    CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --projectDir "$FORNIX_FOLDER" --dir "$@"
+else
+    electron-builder --dir "$@"
+fi
