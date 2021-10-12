@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+first_argument="$1"
+if [ -z "$first_argument" ]
+then
+    echo "(I'm going to run main/main.pl since the first argument is empty)"
+    echo ""
+    first_argument="$FORNIX_FOLDER/main/main.pl"
+fi
+
+# prolog command
+swipl -q --stand_alone=true -c "$first_argument"
