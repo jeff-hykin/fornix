@@ -293,6 +293,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#
+# Rust
+#
+/target
+
 # C extensions
 *.so
 

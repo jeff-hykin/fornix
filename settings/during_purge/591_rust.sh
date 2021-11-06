@@ -1,0 +1,1 @@
+../extensions/rust/during_purge.sh

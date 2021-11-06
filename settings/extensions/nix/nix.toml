@@ -51,6 +51,21 @@
 # comment these out in a situation such as deploying a project to a minimal server
 
 # 
+# Rust
+# 
+[[packages]]
+load = [ "rustc",]
+
+[[packages]]
+load = [ "libiconv",]
+
+[[packages]]
+load = [ "rustup",]
+
+[[packages]]
+load = [ "cargo",]
+
+# 
 # Linux
 # 
 [[packages]]
