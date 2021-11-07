@@ -65,6 +65,12 @@ load = [ "rustup",]
 [[packages]]
 load = [ "cargo",]
 
+[[packages]]
+load = [ "cargo-edit",]
+
+[[packages]]
+load = [ "gtk3",]
+
 # 
 # Linux
 # 
