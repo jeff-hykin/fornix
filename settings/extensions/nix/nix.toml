@@ -44,7 +44,7 @@
 # Deno
 # 
 [[packages]]
-load = "deno"
+load = [ "deno", ]
 from = "860b56be91fb874d48e23a950815969a7b832fbc"
 
 # 
