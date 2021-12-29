@@ -21,8 +21,8 @@ app.settings = {
     // afterSystemBundlerSetup: () => {
     //     // anything you want to do
     // },
-    // afterServerStarted: () => {
-    //     // anything you want to do
-    // },
+    afterServerStarted: () => {
+        console.log("server started on http://localhost:3000")
+    },
 }
 app.start()
