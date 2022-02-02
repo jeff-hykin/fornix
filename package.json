@@ -1,6 +1,7 @@
 {
+    "version": "0.0.1",
     "license": "MIT",
-"main": "dist/node.min.js",
+    "main": "dist/node.min.js",
     "module": "dist/module.js",
     "source": "main/main.js",
     "exports": {
