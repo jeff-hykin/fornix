@@ -1,40 +1,39 @@
 # connect the tealdeer cache to prevent wasted duplicates
 
-# 
-# MacOS
-# 
-if [ "$(uname)" = "Darwin" ] 
+if ! [ "$HOME" = "$FORNIX_HOME" ]
 then
-    # make the real home folder if it doesn't exist
-    if ! [ -d "$HOME/Library/Caches/tealdeer" ]
+    # 
+    # MacOS
+    # 
+    if [ "$(uname)" = "Darwin" ] 
     then
-        mkdir -p "$HOME/Library/Caches/tealdeer"
+        __temp_var__main="$HOME/Library/Caches/tealdeer"
+        __temp_var__project="$FORNIX_HOME/Library/Caches/tealdeer"
+    # 
+    # Linux
+    # 
+    else
+        __temp_var__main="$HOME/.cache/tldr"
+        __temp_var__project="$FORNIX_HOME/.cache/tldr"
     fi
     
-    # link the real home folder to the project 
-    if [ -d "$HOME/Library/Caches/tealdeer" ]
-    then
-        if ! [ -d "$FORNIX_HOME/Library/Caches/tealdeer" ]
-        then
-            ln -s "$HOME/Library/Caches/tealdeer" "$FORNIX_HOME/Library/Caches/tealdeer"
-        fi
-    fi
-# 
-# Linux
-# 
-else
     # make the real home folder if it doesn't exist
-    if ! [ -d "$HOME/.cache/tldr" ]
+    if ! [ -d "$__temp_var__main" ]
     then
-        mkdir -p "$HOME/.cache/tldr"
+        # remove if corrupted
+        rm -f "$__temp_var__main" 2>/dev/null
+        # make sure its a folder
+        mkdir -p "$__temp_var__main"
     fi
     
-    # link the real home folder to the project 
-    if [ -d "$HOME/.cache/tldr" ]
-    then
-        if ! [ -d "$FORNIX_HOME/.cache/tldr" ]
-        then
-            ln -s "$HOME/.cache/tldr" "$FORNIX_HOME/.cache/tldr"
-        fi
-    fi
+    # remove whatever project one might be in the way
+    rm -rf "$__temp_var__project" 2>/dev/null
+    # ensure parent folders exist (*could fail if part of the path is a file)
+    mkdir -p "$(dirname "$__temp_var__project")"
+    # create link
+    ln -sf "$__temp_var__main" "$__temp_var__project"
+    
+    # clean up
+    unset __temp_var__project
+    unset __temp_var__main
 fi
