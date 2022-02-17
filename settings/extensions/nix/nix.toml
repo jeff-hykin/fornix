@@ -45,6 +45,17 @@ load = [ "gnupg",]
 
 [[packages]]
 asNativeBuildInput = true
+load = [ "desktop-file-utils",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux" ] ]
+load = [ "gtk3",]
+
+[[packages]]
+load = [ "cargo-edit",]
+
+[[packages]]
+asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "appstream",]
 
@@ -63,16 +74,6 @@ asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "wrapGAppsHook",]
 
-[[packages]]
-asNativeBuildInput = true
-load = [ "desktop-file-utils",]
-
-[[packages]]
-onlyIf = [ [ "stdenv", "isLinux" ] ]
-load = [ "gtk3",]
-
-[[packages]]
-load = [ "cargo-edit",]
 
 # 
 # 
@@ -93,7 +94,6 @@ load = [ "cargo-edit",]
 [[packages]]
 load = [ "pkgconfig",]
 asNativeBuildInput = true
-onlyIf = [ [ "stdenv", "isLinux",],]
 
 [[packages]]
 load = [ "libconfig",]
@@ -135,6 +135,10 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 [[packages]]
 load = [ "darwin", "apple_sdk", "frameworks", "CoreFoundation" ]
 asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "Security" ]
 onlyIf = [ [ "stdenv", "isDarwin",],]
 
 [[packages]]

@@ -50,12 +50,12 @@ let
             targets = [
                 "wasm32-unknown-unknown"
                 "x86_64-unknown-linux-gnu"
+                "x86_64-apple-darwin"	      # 64-bit macOS (10.7+, Lion+)
                 # wasm32-unknown-unknown    # wasm
                 # aarch64-unknown-linux-gnu # ARM64 Linux (kernel 4.2, glibc 2.17+) 1
                 # i686-pc-windows-gnu       # 32-bit MinGW (Windows 7+)
                 # i686-pc-windows-msvc      # 32-bit MSVC (Windows 7+)
                 # i686-unknown-linux-gnu    # 32-bit Linux (kernel 2.6.32+, glibc 2.11+)
-                # x86_64-apple-darwin	      # 64-bit macOS (10.7+, Lion+)
                 # x86_64-pc-windows-gnu     # 64-bit MinGW (Windows 7+)
                 # x86_64-pc-windows-msvc    # 64-bit MSVC (Windows 7+)
                 # x86_64-unknown-linux-gnu  # 64-bit Linux (kernel 2.6.32+, glibc 2.11+)
@@ -73,7 +73,9 @@ let
                 if 
                     main.stdenv.isDarwin
                 then
-                    [] 
+                    [
+                        main.packages.darwin.apple_sdk.frameworks.Security
+                    ] 
                 else
                     [
                         main.packages.libvmi
