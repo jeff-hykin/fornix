@@ -53,17 +53,17 @@
 # 
 # Rust
 # 
-[[packages]]
-load = [ "rustc",]
+# [[packages]]
+# load = [ "rustc",]
 
-[[packages]]
-load = [ "libiconv",]
+# [[packages]]
+# load = [ "libiconv",]
 
-[[packages]]
-load = [ "rustup",]
+# [[packages]]
+# load = [ "rustup",]
 
-[[packages]]
-load = [ "cargo",]
+# [[packages]]
+# load = [ "cargo",]
 
 [[packages]]
 load = [ "cargo-edit",]
