@@ -13,4 +13,3 @@ name = "main"
 path = "main/main.rs"
 
 [dependencies]
-druid = { git = "https://github.com/linebender/druid" }
