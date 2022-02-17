@@ -1,37 +1,53 @@
 #!/usr/bin/env bash
 
-cargo-tauri tauri build --verbose 
+cargo-tauri tauri build --verbose
 
-cd "$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
+# probably should pull this from a toml file somewhere (I believe its set with tauri init)
+app_name="fornix-tauri"
 
-set -euxo pipefail
+# because tauri's build script fails, this is a copy that runs immediately after
+if [ "$OSTYPE" = "linux-gnu" ] 
+then
+    # FIXME: add an x86_64 check and have a different script for arm
+    
+    app_image_path="$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
+    cd "$app_image_path"
 
-export ARCH=x86_64
+    set -euxo pipefail
 
-mkdir -p "fornix-tauri.AppDir"
-cp -r ../appimage_deb/data/usr "fornix-tauri.AppDir"
+    export ARCH=x86_64
 
-cd "fornix-tauri.AppDir"
+    app_folder_name="$app_name.AppDir"
+    app_folder="$app_image_path/$app_folder_name"
+    mkdir -p "$app_folder"
+    cp -r ../appimage_deb/data/usr "$app_folder"
 
-wget -q -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64 || wget -q -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-aarch64
-chmod +x AppRun
+    cd "$app_folder"
+    
+    # they have a wget, but were not going dynamicly download stuff every time we want to build something
+    # wget -q -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64 || wget -q -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-aarch64
+    cp "$FORNIX_FOLDER/resources/AppRun-x86_64" "$PWD/"
+    chmod +x AppRun
 
-cp "usr/share/icons/hicolor/512x512@2x/apps/fornix-tauri.png" .DirIcon
-ln -sf "usr/share/icons/hicolor/512x512@2x/apps/fornix-tauri.png" "fornix-tauri.png"
+    cp "$app_folder/usr/share/icons/hicolor/512x512@2x/apps/$app_name.png" .DirIcon
+    ln -sf "$app_folder/usr/share/icons/hicolor/512x512@2x/apps/$app_name.png" "$app_name.png"
+    ln -sf "$app_folder/usr/share/applications/$app_name.desktop" "$app_name.desktop"
 
-ln -sf "usr/share/applications/fornix-tauri.desktop" "fornix-tauri.desktop"
-
-cd ..
-
-unset SOURCE_DATE_EPOCH
-mksquashfs "fornix-tauri.AppDir" "fornix-tauri.squashfs" -root-owned -noappend
-
-wget -q -4 -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage || wget -q -4 -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
-chmod +x appimagetool
-if lsmod | grep -q fuse; then
-  ./appimagetool "fornix-tauri.AppDir" "fornix-tauri_0.1.0_amd64.AppImage"
-else
-  ./appimagetool --appimage-extract
-  ./squashfs-root/AppRun "fornix-tauri.AppDir" "fornix-tauri_0.1.0_amd64.AppImage"
-  rm -rf ./squashfs-root
+    cd "$app_image_path"
+    
+    unset SOURCE_DATE_EPOCH # fixes fatal error
+    mksquashfs "$app_folder_name" "$app_name.squashfs" -root-owned -noappend
+    
+    # they have a wget, but were not going dynamicly download stuff every time we want to build something
+    # wget -q -4 -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage || wget -q -4 -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+    rm -f appimagetool
+    cp "$FORNIX_FOLDER/resources/appimagetool-x86_64.AppImage" "$PWD/appimagetool"
+    chmod +x appimagetool
+    if lsmod | grep -q fuse; then
+        ./appimagetool "$app_folder_name" "${app_name}_0.1.0_amd64.AppImage"
+    else
+        ./appimagetool --appimage-extract
+        ./squashfs-root/AppRun "$app_folder_name" "${app_name}_0.1.0_amd64.AppImage"
+        rm -rf ./squashfs-root
+    fi
 fi
