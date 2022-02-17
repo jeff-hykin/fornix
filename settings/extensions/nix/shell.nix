@@ -69,17 +69,31 @@ let
         
         normalIncludes = (builtins.map
             (each: ''-I"${each}/include"'')
-            [
-                main.packages.libvmi
-                main.packages.glibc.dev
-            ]
+            (
+                if 
+                    main.stdenv.isDarwin
+                then
+                    [] 
+                else
+                    [
+                        main.packages.libvmi
+                        main.packages.glibc.dev
+                    ]
+            )
         );
         
-        specialIncludes = [
-            ''-I"${main.packages.llvmPackages_latest.libclang.lib}/lib/clang/${main.packages.llvmPackages_latest.libclang.version}/include"''
-            ''-I"${main.packages.glib.dev}/include/glib-2.0"''
-            ''-I${main.packages.glib.out}/lib/glib-2.0/include/''
-        ];
+        specialIncludes = (
+            if 
+                main.stdenv.isDarwin
+            then
+                [] 
+            else
+                [
+                    ''-I"${main.packages.llvmPackages_latest.libclang.lib}/lib/clang/${main.packages.llvmPackages_latest.libclang.version}/include"''
+                    ''-I"${main.packages.glib.dev}/include/glib-2.0"''
+                    ''-I${main.packages.glib.out}/lib/glib-2.0/include/''
+                ]
+        );
         
         tauri = rustPlatform.buildRustPackage rec {
             version = "1.0.0-beta.2";
@@ -91,14 +105,31 @@ let
             cargoSha256 = "sha256-v1dFLI8J3Ksg+lkw9fAwTYytXkj3ZLlB6086LPy9ZxY=";
         };
         
-        buildInputs = [
+        linuxBuildInputs = [
+            main.packages.grub2
+            main.packages.libayatana-appindicator-gtk3
+        ];
+        
+        macBuildInputs = [
+            
+        ];
+        
+        osBuildInputs = (
+            if 
+                main.stdenv.isDarwin
+            then
+                macBuildInputs
+            else
+                linuxBuildInputs
+        );
+        
+        buildInputs = osBuildInputs ++ [
             rust
             main.packages.llvmPackages_latest.llvm
             main.packages.llvmPackages_latest.bintools
             main.packages.llvmPackages_latest.lld
             main.packages.zlib.out
             main.packages.xorriso
-            main.packages.grub2
             main.packages.qemu
             main.packages.python3
             main.packages.pkg-config 
@@ -114,7 +145,6 @@ let
             main.packages.webkit
             main.packages.gtk3-x11
             main.packages.gtksourceview
-            main.packages.libayatana-appindicator-gtk3
         ];
         
         nativeBuildInputs = [];
@@ -145,9 +175,7 @@ let
             # Add libvmi precompiled library to rustc search path
             RUSTFLAGS = (builtins.map
                 (each: ''-L ${each}/lib'')
-                [
-                    main.packages.libvmi
-                ]
+                (if main.stdenv.isDarwin then [] else [ main.packages.libvmi ])
             );
             
             # Add libvmi, glibc, clang, glib headers to bindgen search path

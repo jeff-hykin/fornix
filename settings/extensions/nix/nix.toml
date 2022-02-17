@@ -45,28 +45,34 @@ load = [ "gnupg",]
 
 [[packages]]
 asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "appstream",]
 
 [[packages]]
 asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "appimagekit",]
 
 [[packages]]
 asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "appstream-glib",]
 
 [[packages]]
 asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "wrapGAppsHook",]
 
 [[packages]]
 asNativeBuildInput = true
 load = [ "desktop-file-utils",]
 
-    # meson
-    # ninja
-    # gettext
-    
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux" ] ]
+load = [ "gtk3",]
+
+[[packages]]
+load = [ "cargo-edit",]
 
 # 
 # 
@@ -79,26 +85,7 @@ load = [ "desktop-file-utils",]
 # and if you need them for one project nix has a shared-memory across projects
 # comment these out in a situation such as deploying a project to a minimal server
 
-# 
-# Rust
-# 
-# [[packages]]
-# load = [ "rustc",]
 
-# [[packages]]
-# load = [ "libiconv",]
-
-# [[packages]]
-# load = [ "rustup",]
-
-# [[packages]]
-# load = [ "cargo",]
-
-[[packages]]
-load = [ "cargo-edit",]
-
-[[packages]]
-load = [ "gtk3",]
 
 # 
 # Linux
