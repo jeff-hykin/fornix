@@ -39,6 +39,35 @@
 
 # [[ you can add tools for your project right here or at the bottom ]]
 
+[[packages]]
+asNativeBuildInput = true
+load = [ "gnupg",]
+
+[[packages]]
+asNativeBuildInput = true
+load = [ "appstream",]
+
+[[packages]]
+asNativeBuildInput = true
+load = [ "appimagekit",]
+
+[[packages]]
+asNativeBuildInput = true
+load = [ "appstream-glib",]
+
+[[packages]]
+asNativeBuildInput = true
+load = [ "wrapGAppsHook",]
+
+[[packages]]
+asNativeBuildInput = true
+load = [ "desktop-file-utils",]
+
+    # meson
+    # ninja
+    # gettext
+    
+
 # 
 # 
 # 
@@ -256,6 +285,12 @@ load = [ "findutils",]
 
 [[packages]]
 load = [ "curl",]
+
+[[packages]]
+load = [ "wget",]
+
+[[packages]]
+load = [ "file",]
 
 [[packages]]
 load = [ "unixtools", "arp",]

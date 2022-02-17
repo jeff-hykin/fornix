@@ -25,7 +25,7 @@ let
     # Rust
     #
     rustSetup = rec {
-        # version = "nightly-2021-09-19";
+        version = "1.58.1";
         
         mozOverlay = (main.import
             (main.fetchTarball
@@ -43,8 +43,7 @@ let
             })
         );
         rustChannel = mainPackagesIncludingRust.rustChannelOf {
-            channel = "1.52.0";
-            sha256 = "sha256-fcaq7+4shIvAy0qMuC3nnYGd0ZikkR5ln/rAruHA6mM=";
+            channel = version;
         };
         rust = (rustChannel.rust.override {
             extensions = [ "rust-src" ]; 
@@ -94,9 +93,6 @@ let
         
         buildInputs = [
             rust
-            # rustPlatform.cargo
-            # rustPlatform.rustc
-            # rustPlatform.rustup
             main.packages.llvmPackages_latest.llvm
             main.packages.llvmPackages_latest.bintools
             main.packages.llvmPackages_latest.lld
@@ -142,8 +138,8 @@ let
             # Certain Rust tools won't work without this
             # This can also be fixed by using oxalica/rust-overlay and specifying the rust-src extension
             # See https://discourse.nixos.org/t/rust-src-not-found-and-other-misadventures-of-developing-rust-on-nixos/11570/3?u=samuela. for more details.
-            # RUST_SRC_PATH = "${mainPackagesIncludingRust.rust.packages.stable.rustPlatform.rustLibSrc}";
-            # RUSTC_VERSION = version;
+            RUST_SRC_PATH = "${mainPackagesIncludingRust.rust.packages.stable.rustPlatform.rustLibSrc}";
+            RUSTC_VERSION = version;
             # https://github.com/rust-lang/rust-bindgen#environment-variables
             LIBCLANG_PATH = main.packages.lib.makeLibraryPath [ main.packages.llvmPackages_latest.libclang.lib ];
             # Add libvmi precompiled library to rustc search path
@@ -287,7 +283,7 @@ in
         
         inherit (rustSetup.envVars)
             RUST_SRC_PATH
-            # RUSTC_VERSION
+            RUSTC_VERSION
             LIBCLANG_PATH
             RUSTFLAGS
             BINDGEN_EXTRA_CLANG_ARGS

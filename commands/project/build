@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+cargo-tauri tauri build --verbose 
+
+cd "$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
+
+set -euxo pipefail
+
+export ARCH=x86_64
+
+mkdir -p "fornix-tauri.AppDir"
+cp -r ../appimage_deb/data/usr "fornix-tauri.AppDir"
+
+cd "fornix-tauri.AppDir"
+
+wget -q -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-x86_64 || wget -q -4 -O AppRun https://github.com/AppImage/AppImageKit/releases/download/12/AppRun-aarch64
+chmod +x AppRun
+
+cp "usr/share/icons/hicolor/512x512@2x/apps/fornix-tauri.png" .DirIcon
+ln -sf "usr/share/icons/hicolor/512x512@2x/apps/fornix-tauri.png" "fornix-tauri.png"
+
+ln -sf "usr/share/applications/fornix-tauri.desktop" "fornix-tauri.desktop"
+
+cd ..
+
+unset SOURCE_DATE_EPOCH
+mksquashfs "fornix-tauri.AppDir" "fornix-tauri.squashfs" -root-owned -noappend
+
+wget -q -4 -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage || wget -q -4 -O appimagetool https://github.com/AppImage/AppImageKit/releases/download/12/appimagetool-x86_64.AppImage
+chmod +x appimagetool
+if lsmod | grep -q fuse; then
+  ./appimagetool "fornix-tauri.AppDir" "fornix-tauri_0.1.0_amd64.AppImage"
+else
+  ./appimagetool --appimage-extract
+  ./squashfs-root/AppRun "fornix-tauri.AppDir" "fornix-tauri_0.1.0_amd64.AppImage"
+  rm -rf ./squashfs-root
+fi
