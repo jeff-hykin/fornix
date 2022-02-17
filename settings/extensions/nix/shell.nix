@@ -25,7 +25,7 @@ let
     # Rust
     #
     rustSetup = rec {
-        version = "nightly-2021-09-19";
+        # version = "nightly-2021-09-19";
         
         mozOverlay = (main.import
             (main.fetchTarball
@@ -43,9 +43,11 @@ let
             })
         );
         rustChannel = mainPackagesIncludingRust.rustChannelOf {
-            channel = "stable";
+            channel = "1.52.0";
+            sha256 = "sha256-fcaq7+4shIvAy0qMuC3nnYGd0ZikkR5ln/rAruHA6mM=";
         };
         rust = (rustChannel.rust.override {
+            extensions = [ "rust-src" ]; 
             targets = [
                 "wasm32-unknown-unknown"
                 "x86_64-unknown-linux-gnu"
@@ -61,6 +63,11 @@ let
             ];
         });
         
+        rustPlatform = mainPackagesIncludingRust.makeRustPlatform {
+            cargo = rustChannel.rust;
+            rustc = rustChannel.rust;
+        };
+        
         normalIncludes = (builtins.map
             (each: ''-I"${each}/include"'')
             [
@@ -75,9 +82,21 @@ let
             ''-I${main.packages.glib.out}/lib/glib-2.0/include/''
         ];
         
+        tauri = rustPlatform.buildRustPackage rec {
+            version = "1.0.0-beta.2";
+            pname = "tauri-v${version}";
+            src = (main.fetchTarball
+                ({url=''https://github.com/tauri-apps/tauri/archive/refs/tags/cli.js-v${version}.tar.gz'';})
+            );
+            sourceRoot = "source/tooling/cli.rs";
+            cargoSha256 = "sha256-v1dFLI8J3Ksg+lkw9fAwTYytXkj3ZLlB6086LPy9ZxY=";
+        };
+        
         buildInputs = [
             rust
-            main.packages.rustup
+            # rustPlatform.cargo
+            # rustPlatform.rustc
+            # rustPlatform.rustup
             main.packages.llvmPackages_latest.llvm
             main.packages.llvmPackages_latest.bintools
             main.packages.llvmPackages_latest.lld
@@ -86,16 +105,36 @@ let
             main.packages.grub2
             main.packages.qemu
             main.packages.python3
+            main.packages.pkg-config 
+            main.packages.openssl
+            main.packages.openssl.dev
+            main.packages.binutils
+            main.packages.zlib
+            main.packages.wget
+            main.packages.curl
+            main.packages.squashfsTools
+            main.packages.pkg-config
+            main.packages.libsoup
+            main.packages.webkit
+            main.packages.gtk3-x11
+            main.packages.gtksourceview
+            main.packages.libayatana-appindicator-gtk3
         ];
         
         nativeBuildInputs = [];
         
         shellHook = ''
             export PATH="$PATH:$HOME/.cargo/bin"
+            export OPENSSL_DIR="${main.packages.openssl.dev}"
+            export OPENSSL_LIB_DIR="${main.packages.openssl.out}/lib"
+            export PKG_CONFIG_PATH="${main.packages.openssl.dev}/lib/pkgconfig";
             if [[ "$OSTYPE" == "linux-gnu" ]] 
             then
                 export PATH="$PATH:$HOME/.rustup/toolchains/$RUSTC_VERSION-x86_64-unknown-linux-gnu/bin/"
             fi
+            
+            # Tauri cli
+            export PATH="$PATH:${tauri}/bin"
         '';
         
         envVars = {
@@ -103,8 +142,8 @@ let
             # Certain Rust tools won't work without this
             # This can also be fixed by using oxalica/rust-overlay and specifying the rust-src extension
             # See https://discourse.nixos.org/t/rust-src-not-found-and-other-misadventures-of-developing-rust-on-nixos/11570/3?u=samuela. for more details.
-            RUST_SRC_PATH = "${main.packages.rust.packages.stable.rustPlatform.rustLibSrc}";
-            RUSTC_VERSION = version;
+            RUST_SRC_PATH = "${mainPackagesIncludingRust.rust.packages.stable.rustPlatform.rustLibSrc}";
+            # RUSTC_VERSION = version;
             # https://github.com/rust-lang/rust-bindgen#environment-variables
             LIBCLANG_PATH = main.packages.lib.makeLibraryPath [ main.packages.llvmPackages_latest.libclang.lib ];
             # Add libvmi precompiled library to rustc search path
@@ -248,7 +287,7 @@ in
         
         inherit (rustSetup.envVars)
             RUST_SRC_PATH
-            RUSTC_VERSION
+            # RUSTC_VERSION
             LIBCLANG_PATH
             RUSTFLAGS
             BINDGEN_EXTRA_CLANG_ARGS
