@@ -2,6 +2,9 @@
 # Custom
 # 
 
+# from tauri 
+/target/
+WixTools
 
 # 
 # standard

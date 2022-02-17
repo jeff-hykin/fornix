@@ -1,16 +1,42 @@
 #!/usr/bin/env bash
 
-cargo-tauri tauri build --verbose
+# 
+# a workaround because I don't like tauri's folder layout
+# 
+tauri_src="$FORNIX_FOLDER/workspace.ignore/src-tauri"
+mkdir -p "$tauri_src"
+ln -sf "../../.gitignore" "$tauri_src/"
+ln -sf "../../settings/requirements/Cargo.toml" "$tauri_src/"
+ln -sf "../../settings/requirements/Cargo.lock" "$tauri_src/"
+ln -sf "../../rustfmt.toml" "$tauri_src/"
+ln -sf "../../main/tauri.conf.json" "$tauri_src/"
+ln -sf "../../main/frontend" "$tauri_src/"
+ln -sf "../../main/icons" "$tauri_src/"
+rm -f "$tauri_src/src"
+ln -sf "../../main/backend" "$tauri_src/src"
+cd "$tauri_src/.."
 
+# 
+# the actual build command
+# 
 # probably should pull this from a toml file somewhere (I believe its set with tauri init)
 app_name="fornix-tauri"
+cargo-tauri tauri build --verbose
 
-# because tauri's build script fails, this is a copy that runs immediately after
+
+# 
+# a fix because tauri's build script fails, this is a copy that runs immediately after
+# 
 if [ "$OSTYPE" = "linux-gnu" ] 
 then
     # FIXME: add an x86_64 check and have a different script for arm
     
     app_image_path="$FORNIX_FOLDER/target.ignore/release/bundle/appimage"
+    # fail if project wasnt generated
+    if ! [ -d "$app_image_path" ]
+    then
+        exit
+    fi
     cd "$app_image_path"
 
     set -euxo pipefail
