@@ -277,7 +277,8 @@ let
             if [[ "$OSTYPE" = "darwin"* ]] 
             then
                 true # add important nix-MacOS code here
-                export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include:${main.packages.darwin.apple_sdk.frameworks.CoreServices}/Library/Frameworks/CoreServices.framework/Headers/"
+                export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include:${main.packages.darwin.apple_sdk.frameworks.CoreServices}/Library/Frameworks/CoreServices.framework/Headers/:${main.packages.darwin.apple_sdk.frameworks.Security}/Library/Frameworks/Security.framework/Headers/"
+                export CPATH="$CPATH:${main.packages.darwin.apple_sdk.frameworks.Security}/Library/Frameworks/Security.framework/Headers/"
             fi
         '';
     }) else emptyOptions;
