@@ -194,6 +194,8 @@ let
         ];
         
         buildInputs = [
+            main.packages.darwin.apple_sdk.frameworks.Security
+            main.packages.libiconv
             rust
             main.packages.rustup
             main.packages.llvmPackages_latest.llvm
