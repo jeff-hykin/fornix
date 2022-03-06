@@ -161,6 +161,12 @@ load = [ "ncurses",]
 [[packages]]
 load = [ "openssh",]
 
+[[packages]]
+load = [ "openssl",]
+
+[[packages]]
+load = [ "perl",] # needed for `cargo install wasm-pack` because openssl rust depends on perl for some reason
+
 # 
 # 
 # fancy command line tools
