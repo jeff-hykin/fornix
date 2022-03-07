@@ -53,17 +53,14 @@
 # 
 # Rust
 # 
-# [[packages]]
-# load = [ "rustc",]
+[[packages]]
+load = [ "cargo-edit",]
 
-# [[packages]]
-# load = [ "libiconv",]
+[[packages]]
+load = [ "openssl",]
 
-# [[packages]]
-# load = [ "rustup",]
-
-# [[packages]]
-# load = [ "cargo",]
+[[packages]]
+load = [ "perl",] # needed for `cargo install wasm-pack` because openssl rust depends on perl for some reason
 
 [[packages]]
 load = [ "cargo-edit",]
@@ -162,7 +159,7 @@ load = [ "libkrb5",]
 # 
 
 [[packages]]
-load = [ "ncurses",]
+load = [ "ncurses5",]
 
 [[packages]]
 load = [ "openssh",]
