@@ -86,7 +86,17 @@ load = [ "wrapGAppsHook",]
 # and if you need them for one project nix has a shared-memory across projects
 # comment these out in a situation such as deploying a project to a minimal server
 
+# 
+# Rust
+# 
+[[packages]]
+load = [ "cargo-edit",]
 
+[[packages]]
+load = [ "openssl",]
+
+[[packages]]
+load = [ "perl",] # needed for `cargo install wasm-pack` because openssl rust depends on perl for some reason
 
 # 
 # Linux
@@ -182,7 +192,7 @@ load = [ "libkrb5",]
 # 
 
 [[packages]]
-load = [ "ncurses",]
+load = [ "ncurses5",]
 
 [[packages]]
 load = [ "openssh",]
