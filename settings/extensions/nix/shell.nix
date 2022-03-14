@@ -27,8 +27,8 @@ let
     );
     
     rustInfo = {
-        version = "nightly-2021-09-19";
-        channel = "stable"; # probably bad that this conflict with whats said in the version
+        version = "nightly-2022-03-09";
+        channel = "nightly";
         targets = [
             "wasm32-unknown-unknown"
             "x86_64-unknown-linux-gnu"
