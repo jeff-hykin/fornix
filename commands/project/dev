@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+
+cd "$FORNIX_FOLDER/packages/src-tauri"
+cargo install --path .
+
+# backend
+cd "$FORNIX_FOLDER/packages"
+cargo tauri dev "$@"

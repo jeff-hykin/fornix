@@ -39,20 +39,65 @@
 
 # [[ you can add tools for your project right here or at the bottom ]]
 
+# for building
 [[packages]]
-asNativeBuildInput = true
-load = [ "gnupg",]
+load = [ "yarn",]
 
 [[packages]]
-asNativeBuildInput = true
-load = [ "desktop-file-utils",]
+load = [ "nodejs",]
 
 [[packages]]
-onlyIf = [ [ "stdenv", "isLinux" ] ]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "bless",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "cairo",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "pango",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "atk",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gdk-pixbuf",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "libsoup",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "gtk3",]
+from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 
 [[packages]]
-load = [ "cargo-edit",]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gnome", "webkitgtk",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "sass",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "librsvg",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "patchelf",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gnome3", "dconf",]
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "gsettings-desktop-schemas" ]
 
 [[packages]]
 asNativeBuildInput = true
@@ -74,6 +119,27 @@ asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isLinux" ] ]
 load = [ "wrapGAppsHook",]
 
+# 
+# for .so errors on linux with opencv+ffmpeg
+# 
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "libglvnd",]
+asNativeBuildInput = true
+from = "559cf76fa3642106d9f23c9e845baf4d354be682"
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "glib",]
+from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+#asNativeBuildInput = true
+
+[[packages]]
+onlyIf = [ [ "stdenv", "isLinux",],]
+load = [ "glibc",]
+#asNativeBuildInput = true
+from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 
 # 
 # 
@@ -104,6 +170,7 @@ load = [ "perl",] # needed for `cargo install wasm-pack` because openssl rust de
 [[packages]]
 load = [ "pkgconfig",]
 asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
 
 [[packages]]
 load = [ "libconfig",]
@@ -168,6 +235,11 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 
 [[packages]]
 load = [ "darwin", "apple_sdk", "frameworks", "AppKit" ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
+load = [ "darwin", "apple_sdk", "frameworks", "Cocoa" ]
 asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isDarwin",],]
 
@@ -259,6 +331,9 @@ load = [ "git-subrepo",]
 # Basic Commandline tools
 #
 #
+
+[[packages]]
+load = [ "openssl",]
 
 [[packages]]
 load = [ "man",]
@@ -394,7 +469,7 @@ load = [ "unixtools", "xxd",]
 # 
 [[packages]]
 load = [ "deno",]
-from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+from = "d1b993abaa6dc6df5014bb70fd1111f39f310bec"
 
 [[packages]]
 load = [ "nix",]
