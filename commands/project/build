@@ -1,25 +1,27 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S deno run --allow-all
 
-# 
-# a workaround because I don't like tauri's folder layout
-# 
-tauri_src="$FORNIX_FOLDER/workspace.ignore/src-tauri"
-mkdir -p "$tauri_src"
-ln -sf "../../.gitignore" "$tauri_src/"
-ln -sf "../../settings/requirements/Cargo.toml" "$tauri_src/"
-ln -sf "../../settings/requirements/Cargo.lock" "$tauri_src/"
-ln -sf "../../rustfmt.toml" "$tauri_src/"
-ln -sf "../../main/tauri.conf.json" "$tauri_src/"
-ln -sf "../../main/frontend" "$tauri_src/"
-ln -sf "../../main/icons" "$tauri_src/"
-rm -f "$tauri_src/src"
-ln -sf "../../main/backend" "$tauri_src/src"
+import { Console } from "https://deno.land/x/quickr@0.0.9/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.0.9/main/file_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.0.9/main/run.js"
+import { createWorkspace } from "../../scripting_helpers/generate_workspace.js"
 
-# setup
-cd "$tauri_src"
-cargo install --path .
+const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
+const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/settings/project.json`))
 
-# build
-cd "$tauri_src/.."
-# cargo tauri icon src-tauri/app-icon.png
-cargo tauri build --verbose "$@"
+// 
+// create workspace
+// 
+const tauriSrc = await createWorkspace(projectSettings.workspaceFolder)
+// var tauriSrc = `${projectRoot}/workspace.ignore/src-tauri`
+
+// 
+// install tauri
+// 
+await Deno.chdir(tauriSrc)
+await run('cargo', "install", "--path", ".")
+
+// 
+// build the app!
+// 
+await Deno.chdir(FileSystem.parentPath(tauriSrc))
+await run('cargo', "tauri", "build", "--verbose", ...Deno.args)

@@ -41,12 +41,6 @@
 
 # for building
 [[packages]]
-load = [ "yarn",]
-
-[[packages]]
-load = [ "nodejs",]
-
-[[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "bless",]
 

@@ -1,9 +1,26 @@
-#!/usr/bin/env bash
+#!/usr/bin/env -S deno run --allow-all
 
+import { Console } from "https://deno.land/x/quickr@0.0.9/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.0.9/main/file_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.0.9/main/run.js"
+import { createWorkspace } from "../../scripting_helpers/generate_workspace.js"
 
-cd "$FORNIX_FOLDER/packages/src-tauri"
-cargo install --path .
+const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
+const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/settings/project.json`))
 
-# backend
-cd "$FORNIX_FOLDER/packages"
-cargo tauri dev "$@"
+// 
+// create workspace
+// 
+const tauriSrc = await createWorkspace(projectSettings.workspaceFolder)
+
+// 
+// install tauri
+// 
+await Deno.chdir(tauriSrc)
+await run('cargo', "install", "--path", ".")
+
+// 
+// start developing!
+// 
+await Deno.chdir(FileSystem.parentPath(tauriSrc))
+await run('cargo', "tauri", "dev", ...Deno.args)
