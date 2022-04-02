@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console } from "https://deno.land/x/quickr@0.0.9/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.0.9/main/file_system.js"
-import { OperatingSystem } from "https://deno.land/x/quickr@0.0.9/main/operating_system.js"
-import { Overwrite, run } from "https://deno.land/x/quickr@0.0.9/main/run.js"
+import { Console } from "https://deno.land/x/quickr@0.0.11/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.0.11/main/file_system.js"
+import { OperatingSystem } from "https://deno.land/x/quickr@0.0.11/main/operating_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.0.11/main/run.js"
 import { findAll } from "https://deno.land/x/good@0.4.1/string.js"
 import * as Path from "https://deno.land/std@0.128.0/path/mod.ts"
 

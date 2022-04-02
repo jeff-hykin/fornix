@@ -1,8 +1,8 @@
 [package]
-name = "app"
+name = "tauri"
 version = "0.1.0"
 description = "A Tauri App"
-default-run = "app"
+default-run = "tauri"
 edition = "2018"
 build = "src/build.rs"
 

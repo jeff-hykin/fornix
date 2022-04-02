@@ -186,14 +186,14 @@
     );
     tomlAndBuiltinPackagesWithSources = (tomlPackagesWithSources ++ 
         [  
-            {
-                name = "glib";
-                value = packages.glib;
-            }
-            {
-                name = "cc";
-                value = main.stdenv.cc.cc;
-            }
+            # {
+            #     name = "glib";
+            #     value = packages.glib;
+            # }
+            # {
+            #     name = "cc";
+            #     value = main.stdenv.cc.cc;
+            # }
         ]
     );
     buildInputs = (main.map

@@ -67,7 +67,6 @@ load = [ "libsoup",]
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
 load = [ "gtk3",]
-from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 
 [[packages]]
 onlyIf = [ [ "stdenv", "isLinux",],]
@@ -123,17 +122,17 @@ load = [ "libglvnd",]
 asNativeBuildInput = true
 from = "559cf76fa3642106d9f23c9e845baf4d354be682"
 
-[[packages]]
-onlyIf = [ [ "stdenv", "isLinux",],]
-load = [ "glib",]
-from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
-#asNativeBuildInput = true
+# [[packages]]
+# onlyIf = [ [ "stdenv", "isLinux",],]
+# load = [ "glib",]
+# from = "c82b46413401efa740a0b994f52e9903a4f6dcd5"
+# #asNativeBuildInput = true
 
-[[packages]]
-onlyIf = [ [ "stdenv", "isLinux",],]
-load = [ "glibc",]
-#asNativeBuildInput = true
-from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
+# [[packages]]
+# onlyIf = [ [ "stdenv", "isLinux",],]
+# load = [ "glibc",]
+# #asNativeBuildInput = true
+# from = "137f19d1d48b6d7c7901bb86729a2bce3588d4e9"
 
 # 
 # 
@@ -176,9 +175,9 @@ load = [ "cmake",]
 asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isLinux",],]
 
-[[packages]]
-load = [ "stdenv", "cc",]
-onlyIf = [ [ "stdenv", "isLinux",],]
+# [[packages]]
+# load = [ "stdenv", "cc",]
+# onlyIf = [ [ "stdenv", "isLinux",],]
 
 # 
 # Mac
@@ -257,6 +256,7 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 # 
 [[packages]]
 load = [ "gcc",]
+onlyIf = [ [ "stdenv", "isDarwin",],]
 
 [[packages]]
 load = [ "libkrb5",]

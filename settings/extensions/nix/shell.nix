@@ -38,7 +38,8 @@ let
             if [[ "$OSTYPE" == "linux-gnu" ]] 
             then
                 true # add important (LD_LIBRARY_PATH, PATH, etc) nix-Linux code here
-                export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include"
+                # export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include"
+                export PATH="${main.packages.llvmPackages_latest.bintools}/bin/:$PATH"
             fi
         '';
     }) else emptyOptions;
@@ -79,16 +80,17 @@ in
                 # an "inline" mixin (this is what each mixin looks like)
                 ({
                     # inside that shell, make sure to use these packages
-                    buildInputs = [];
+                    buildInputs = [
+                        main.packages.llvmPackages_latest.bintools
+                    ];
                     
                     nativeBuildInputs = [];
                     
                     # run some bash code before starting up the shell
+                        # export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${main.packages.ncurses5}/lib"
+                        # export LD_LIBRARY_PATH="${main.makeLibraryPath [ main.packages.glib ] }:$LD_LIBRARY_PATH"
                     shellHook = ''
                         # provide access to ncurses for nice terminal interactions
-                        export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${main.packages.ncurses5}/lib"
-                        export LD_LIBRARY_PATH="${main.makeLibraryPath [ main.packages.glib ] }:$LD_LIBRARY_PATH"
-                        
                         if [ "$FORNIX_DEBUG" = "true" ]; then
                             echo "finished: 'shellHook' inside the 'settings/extensions/nix/shell.nix' file"
                             echo ""
