@@ -186,6 +186,7 @@
     );
     tomlAndBuiltinPackagesWithSources = (tomlPackagesWithSources ++ 
         [  
+            # TODO: test un-commenting these
             # {
             #     name = "glib";
             #     value = packages.glib;
