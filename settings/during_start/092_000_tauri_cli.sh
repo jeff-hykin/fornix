@@ -1,0 +1,1 @@
+cargo install --git https://github.com/tauri-apps/tauri/ --rev 6839fde11de39e6eafaee31782825eda1d7f2266 tauri-cli

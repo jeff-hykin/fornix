@@ -15,13 +15,13 @@ const tauriSrc = await createWorkspace(projectSettings.workspaceFolder)
 // var tauriSrc = `${projectRoot}/workspace.ignore/src-tauri`
 
 // 
-// install tauri
+// create executable
 // 
 await Deno.chdir(tauriSrc)
 const { success } = await run('cargo', "install", "--path", ".").outcome
 
 // 
-// build the app!
+// package it into an app
 // 
 if (success) {
     // NOTE: not sure why MacOS and Linx are so different here
