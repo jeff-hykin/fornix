@@ -24,12 +24,6 @@ const { success } = await run('cargo', "install", "--path", ".").outcome
 // package it into an app
 // 
 if (success) {
-    // NOTE: not sure why MacOS and Linx are so different here
-    if (Deno.build.os == "linux") {
-        success && await run('cargo', "build")
-        console.log(`\n   executable created in: ${blue`${Console.env.HOME}/.cargo/bin/`}`)
-    } else if (Deno.build.os == "darwin") {
-        await Deno.chdir(FileSystem.parentPath(tauriSrc))
-        await run('cargo', "tauri", "build", "--verbose", ...Deno.args)
-    }
+    await Deno.chdir(FileSystem.parentPath(tauriSrc))
+    await run('cargo', "tauri", "build", "--verbose")
 }
