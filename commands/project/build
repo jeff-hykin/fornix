@@ -1,8 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console, blue } from "https://deno.land/x/quickr@0.0.11/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.0.11/main/file_system.js"
-import { Overwrite, run } from "https://deno.land/x/quickr@0.0.11/main/run.js"
+import { Console, blue } from "https://deno.land/x/quickr@0.2.1/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.2.1/main/file_system.js"
+import { run, Stdout, returnAsString, Overwrite } from "https://deno.land/x/quickr@0.2.1/main/run.js"
 import { createWorkspace } from "../../scripting_helpers/generate_workspace.js"
 
 const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
@@ -24,6 +24,16 @@ const { success } = await run('cargo', "install", "--path", ".").outcome
 // package it into an app
 // 
 if (success) {
+    if (Deno.build.os == "linux") {
+        const systemPackagesInfo = JSON.parse(FileSystem.read(Console.env.__FORNIX_NIX_PATH_EXPORT_FILE))
+        const webkitGtkPath = systemPackagesInfo.libPathFor["gnome.webkitgtk"]
+        Console.env.LD_LIBRARY_PATH = `${Console.env.LD_LIBRARY_PATH}:${webkitGtkPath}` 
+        // fix for:
+            // Deploying dependencies for ELF file fornix-tauri.AppDir/usr/lib/x86_64-linux-gnu/webkit2gtk-4.0/injected-bundle/libwebkit2gtkinjectedbundle.so 
+            // ERROR: Could not find dependency: libwebkit2gtk-4.0.so.37 
+            // ERROR: Failed to deploy dependencies for existing files 
+            // Error: failed to bundle project
+    }
     await Deno.chdir(FileSystem.parentPath(tauriSrc))
     await run('cargo', "tauri", "build", "--verbose")
 }
