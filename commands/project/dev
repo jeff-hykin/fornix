@@ -1,8 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console } from "https://deno.land/x/quickr@0.0.11/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.0.11/main/file_system.js"
-import { Overwrite, run } from "https://deno.land/x/quickr@0.0.11/main/run.js"
+import { Console } from "https://deno.land/x/quickr@0.2.1/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.2.1/main/file_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.2.1/main/run.js"
 import { createWorkspace } from "../../scripting_helpers/generate_workspace.js"
 
 const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
