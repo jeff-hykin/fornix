@@ -5,7 +5,7 @@
   },
   "build": {
     "distDir": "frontend",
-    "devPath": "localhost:1222",
+    "devPath": "http://localhost:1222",
     "beforeDevCommand": "",
     "beforeBuildCommand": ""
   },
@@ -47,7 +47,11 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "all": true,
+      "http": {
+        "all": true,
+        "request": true
+      }
     },
     "windows": [
       {

@@ -3,10 +3,7 @@
 import { Console, blue } from "https://deno.land/x/quickr@0.3.13/main/console.js"
 import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
 import { run, Stdout, returnAsString, Overwrite } from "https://deno.land/x/quickr@0.3.13/main/run.js"
-import { createWorkspace } from "../../scripting_helpers/generate_workspace.js"
-
-const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
-const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/settings/project.json`))
+import { projectRoot, projectSettings, createWorkspace } from "../../scripting_helpers/generate_workspace.js"
 
 // 
 // create workspace

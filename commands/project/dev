@@ -3,24 +3,37 @@
 import { Console } from "https://deno.land/x/quickr@0.3.13/main/console.js"
 import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
 import { Overwrite, run } from "https://deno.land/x/quickr@0.3.13/main/run.js"
-import { createWorkspace } from "../../scripting_helpers/generate_workspace.js"
+import { projectSettings, tauriSettings, createWorkspace, server, frontendFolder } from "../../scripting_helpers/generate_workspace.js"
 
-const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
-const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/settings/project.json`))
-
-// 
-// create workspace
-// 
+// initial compile (includes compiling frontend)
 const tauriSrc = await createWorkspace(projectSettings.workspaceFolder)
 
 // 
-// install tauri
+// make sure tauri installed tauri
 // 
 await Deno.chdir(tauriSrc)
 await run('cargo', "install", "--path", ".")
 
-// 
-// start developing!
-// 
+// start compiling the binary
 await Deno.chdir(FileSystem.parentPath(tauriSrc))
-await run('cargo', "tauri", "dev", ...Deno.args)
+const tauriProcess = run('cargo', "tauri", "dev", ...Deno.args)
+
+// 
+// start dev server that tauri will try to connect to
+// 
+console.log("Attempting to extract port# from tauri.conf.json .build.devPath")
+try {
+    const port = tauriSettings.build.devPath.match(/:(\d+)$/)[1]-0
+    console.debug(`port is:`,port)
+    server(port)
+} catch (error) {
+    console.warn(`failed to start dev server:`, error)
+}
+
+// 
+// re-compile the project when something changes
+// 
+for await (const { added, modified, deleted } of Deno.watchFs(frontendFolder)) {
+    // const thingsToCompile = new Set([...added, ...modified])
+    await createWorkspace(projectSettings.workspaceFolder)
+}

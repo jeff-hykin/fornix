@@ -1,18 +1,60 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console } from "https://deno.land/x/quickr@0.3.13/main/console.js"
+import { Console, blue } from "https://deno.land/x/quickr@0.3.13/main/console.js"
 import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
 import { OperatingSystem } from "https://deno.land/x/quickr@0.3.13/main/operating_system.js"
 import { Overwrite, run } from "https://deno.land/x/quickr@0.3.13/main/run.js"
 import { findAll } from "https://deno.land/x/good@0.4.1/string.js"
 import * as Path from "https://deno.land/std@0.128.0/path/mod.ts"
+import { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/mod.ts";
 
-// TODO: add error handling messages here encase something is corrupt
-const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
+export const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
+console.debug(`projectRoot is:`,projectRoot)
+const projectSettingsPath = `${projectRoot}/settings/project.json`
+const tauriSettingsPath = `${projectRoot}/settings/tauri.conf.json`
+let maybeProjectSettings, maybeTauriSettings
+try { maybeProjectSettings = JSON.parse(await FileSystem.read(projectSettingsPath)) } catch (error) {}
+try { maybeTauriSettings   = JSON.parse(await FileSystem.read(tauriSettingsPath  )) } catch (error) {}
+
+if (!(maybeProjectSettings instanceof Object)) {
+    console.error(`
+        
+        When loading part of the project (this is the '${FileSystem.thisFile}' speaking)
+            
+            I was looking for: ${blue`${projectSettings}`}
+            But I either I couldn't find it, or it wasnt a valid JSON file
+        
+        Please create it, and make it similar to this:
+            {
+                "workspaceFolder": "./workspace.ignore",
+                "transpileOptions": {
+                    "esVersion": "es2015",
+                    "minified": true,
+                    "presets": [],
+                    "plugins": []
+                }
+            }
+    `)
+}
+if (!(maybeTauriSettings instanceof Object)) {
+    console.error(`
+        
+        When loading part of the project (this is the '${FileSystem.thisFile}' speaking)
+            
+            I was looking for: ${blue`${tauriSettingsPath}`}
+            But I either I couldn't find it, or it wasnt a valid JSON file
+        
+        Please create it, and check the tauri github for how it should be formatted
+        (The available options are way more than I can cover here)
+    `)
+}
+export const projectSettings = maybeProjectSettings
+export const tauriSettings = maybeTauriSettings
+export const frontendFolder = `${projectRoot}/${projectSettings.frontendFolder}`
+
 const babelRuntimePath = `${projectRoot}/scripting_helpers/dependencies/babel_runtime@v0.13.9.js`
 const babelCompileTimePath = `${projectRoot}/scripting_helpers/dependencies/babel@v7.13.8.js`
 const packupInstallerSource = "https://deno.land/x/packup@v0.1.12/install.ts"
-const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/settings/project.json`))
 const transpileOptions = projectSettings.transpileOptions
 
 export async function relativeLink({existingItem, newItem, force=true}) {
@@ -36,14 +78,14 @@ export async function relativeLink({existingItem, newItem, force=true}) {
 export async function createWorkspace(workspaceFolder) {
     const tauriSrc = FileSystem.makeAbsolutePath(`${workspaceFolder}/src-tauri`)
     // frontend is special
-    const [ frontendExisting, frontendTarget ] = [ `${projectRoot}/main/frontend`, `${tauriSrc}/frontend` ]
+    const [ frontendExisting, frontendTarget ] = [ frontendFolder, `${tauriSrc}/frontend` ]
     // others are not
     const pathsToLink = [
         [`${projectRoot}/.gitignore`,                       `${tauriSrc}/.gitignore`      ],
         [`${projectRoot}/settings/requirements/Cargo.toml`, `${tauriSrc}/Cargo.toml`      ],
         [`${projectRoot}/settings/requirements/Cargo.lock`, `${tauriSrc}/Cargo.lock`      ],
         [`${projectRoot}/rustfmt.toml`,                     `${tauriSrc}/rustfmt.toml`    ],
-        [`${projectRoot}/main/tauri.conf.json`,             `${tauriSrc}/tauri.conf.json` ],
+        [ tauriSettingsPath,                                `${tauriSrc}/tauri.conf.json` ],
         [`${projectRoot}/main/icons`,                       `${tauriSrc}/icons`           ],
         [`${projectRoot}/main/backend`,                     `${tauriSrc}/src`             ],
     ]
@@ -236,4 +278,50 @@ export async function packup({ inputPath, outputPath }) {
         throw Error(`\n\nTried to bundle: ${inputPath}\nThis was done using packup at: ${packupCommand}\nHowever the command failed (error stream should be printed above)`)
     }
     return outputPath
+}
+
+export async function server(port) {
+    // Start listening on port 8080 of localhost.
+    const server = Deno.listen({ port })
+    console.log(`File server running on http://localhost:${port}/`)
+
+    for await (const conn of server) {
+        handleHttp(conn)
+    }
+
+    async function handleHttp(conn) {
+        const httpConn = Deno.serveHttp(conn)
+        for await (const requestEvent of httpConn) {
+            // Use the request pathname as filepath
+            const url = new URL(requestEvent.request.url)
+            const filepath = decodeURIComponent(url.pathname)
+
+            // Try opening the file
+            let file
+            try {
+                file = await Deno.open("." + filepath, { read: true })
+                const stat = await file.stat()
+
+                // If File instance is a directory, lookup for an index.html
+                if (stat.isDirectory) {
+                    file.close()
+                    const filePath = Path.join("./", filepath, "index.html")
+                    file = await Deno.open(filePath, { read: true })
+                }
+            } catch {
+                // If the file cannot be opened, return a "404 Not Found" response
+                const notFoundResponse = new Response("404 Not Found", { status: 404 })
+                await requestEvent.respondWith(notFoundResponse)
+                return
+            }
+
+            // Build a readable stream so the file doesn't have to be fully loaded into
+            // memory while we send it
+            const readableStream = readableStreamFromReader(file)
+
+            // Build and send the response
+            const response = new Response(readableStream)
+            await requestEvent.respondWith(response)
+        }
+    }
 }

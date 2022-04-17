@@ -1,4 +1,5 @@
 {
+    "frontendFolder": "./main/frontend",
     "workspaceFolder": "./workspace.ignore",
     "transpileOptions": {
         "esVersion": "es2015",
