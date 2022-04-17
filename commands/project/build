@@ -11,10 +11,12 @@ import { projectRoot, projectSettings, createWorkspace, tauriSrc } from "../../t
 await createWorkspace()
 
 // 
-// create executable
+// make sure tauri installed
 // 
-await Deno.chdir(tauriSrc)
-const { success } = await run('cargo', "install", "--path", ".").outcome
+const { success } = await run("cargo", "tauri", "build", "--version", Stdout(null)).outcome
+if (!success) {
+    await run('cargo', "install", "--path", ".", Cwd(tauriSrc))
+}
 
 // 
 // package it into an app
