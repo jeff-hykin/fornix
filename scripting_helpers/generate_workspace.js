@@ -1,15 +1,17 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console } from "https://deno.land/x/quickr@0.2.1/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.2.1/main/file_system.js"
-import { OperatingSystem } from "https://deno.land/x/quickr@0.2.1/main/operating_system.js"
-import { Overwrite, run } from "https://deno.land/x/quickr@0.2.1/main/run.js"
+import { Console } from "https://deno.land/x/quickr@0.3.13/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
+import { OperatingSystem } from "https://deno.land/x/quickr@0.3.13/main/operating_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.3.13/main/run.js"
 import { findAll } from "https://deno.land/x/good@0.4.1/string.js"
 import * as Path from "https://deno.land/std@0.128.0/path/mod.ts"
 
 // TODO: add error handling messages here encase something is corrupt
 const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
 const babelRuntimePath = `${projectRoot}/scripting_helpers/dependencies/babel_runtime@v0.13.9.js`
+const babelCompileTimePath = `${projectRoot}/scripting_helpers/dependencies/babel@v7.13.8.js`
+const packupInstallerSource = "https://deno.land/x/packup@v0.1.12/install.ts"
 const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/settings/project.json`))
 const transpileOptions = projectSettings.transpileOptions
 
@@ -117,7 +119,7 @@ export async function compileFrontend({ frontendExisting, frontendTarget }) {
 
 export async function injectBabelRuntimeInto({htmlPath, babelScriptTag}) {
     let htmlCode = await FileSystem.read(htmlPath)
-    const htmlCodeNoScripts = htmlCode.replace(/<script[\w\W]+<\/script>/,"").replace(/<style[\w\W]+<\/style>/) // TODO: this might be imperfect escaping
+    const htmlCodeNoScripts = htmlCode.replace(/<script[\w\W]+<\/script>/,"").replace(/<style[\w\W]+<\/style>/,"") // TODO: this might be imperfect escaping
     if (!htmlCodeNoScripts.match(/<head>/i)) {
         
         // situation1:
@@ -173,7 +175,7 @@ let Babel
 export async function transpile({ inputPath, outputPath, esVersion, minified, presets, plugins }) {
     // Babel is huge so delay the import
     if (!Babel) {
-        Babel = (await import("./dependencies/babel@v7.13.8.js")).default
+        Babel = (await import(babelCompileTimePath)).default
     }
     const inputInfo = await FileSystem.info(inputPath)
     if (!inputInfo.isFile) {
@@ -215,12 +217,12 @@ export async function packup({ inputPath, outputPath }) {
     let packupInfo = await FileSystem.info(packupCommand)
     let hasPackup = true
     // try auto-install packup
-    if (packup.doesntExist) {
+    if (packupInfo.doesntExist) {
         hasPackup = false
-        const { success, exitCode } = await run(`deno`, "run", "-A", "https://deno.land/x/packup@v0.1.12/install.ts").outcome
+        const { success, exitCode } = await run(`deno`, "run", "-A", packupInstallerSource).outcome
         if (success) {
             packupInfo = await FileSystem.info(packupCommand)
-            hasPackup = packup.exists
+            hasPackup = packupInfo.exists
         }
     }
     if (!hasPackup) {
