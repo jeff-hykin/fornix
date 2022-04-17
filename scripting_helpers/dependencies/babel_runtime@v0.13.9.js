@@ -1,3 +1,6 @@
+if (typeof window != 'undefined') {
+    window.globalThis = window
+}
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  *
@@ -5,7 +8,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 // https://unpkg.com/regenerator-runtime@0.13.9/runtime.js
-
 var runtime = (function (exports) {
   "use strict";
 

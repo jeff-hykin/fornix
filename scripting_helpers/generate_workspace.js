@@ -50,7 +50,9 @@ if (!(maybeTauriSettings instanceof Object)) {
 }
 export const projectSettings = maybeProjectSettings
 export const tauriSettings = maybeTauriSettings
+export const tauriSrc = `${projectRoot}/${projectSettings.workspaceFolder}/src-tauri`
 export const frontendFolder = `${projectRoot}/${projectSettings.frontendFolder}`
+export const compiledFrontendFolder = `${tauriSrc}/frontend`
 
 const babelRuntimePath = `${projectRoot}/scripting_helpers/dependencies/babel_runtime@v0.13.9.js`
 const babelCompileTimePath = `${projectRoot}/scripting_helpers/dependencies/babel@v7.13.8.js`
@@ -75,8 +77,7 @@ export async function relativeLink({existingItem, newItem, force=true}) {
     }
 }
 
-export async function createWorkspace(workspaceFolder) {
-    const tauriSrc = FileSystem.makeAbsolutePath(`${workspaceFolder}/src-tauri`)
+export async function createWorkspace() {
     // frontend is special
     const [ frontendExisting, frontendTarget ] = [ frontendFolder, `${tauriSrc}/frontend` ]
     // others are not
@@ -106,7 +107,7 @@ export async function createWorkspace(workspaceFolder) {
     // 
     // handle frontend
     // 
-    await compileFrontend({ frontendExisting, frontendTarget })
+    await compileFrontend({ frontendExisting: frontendFolder, frontendTarget: compiledFrontendFolder })
 
     return tauriSrc
 }
@@ -280,7 +281,7 @@ export async function packup({ inputPath, outputPath }) {
     return outputPath
 }
 
-export async function server(port) {
+export async function server({port, folder}) {
     // Start listening on port 8080 of localhost.
     const server = Deno.listen({ port })
     console.log(`File server running on http://localhost:${port}/`)
@@ -294,19 +295,18 @@ export async function server(port) {
         for await (const requestEvent of httpConn) {
             // Use the request pathname as filepath
             const url = new URL(requestEvent.request.url)
-            const filepath = decodeURIComponent(url.pathname)
+            const path = decodeURIComponent(url.pathname)
 
             // Try opening the file
             let file
             try {
-                file = await Deno.open("." + filepath, { read: true })
+                file = await Deno.open(`${folder}/${path}`, { read: true })
                 const stat = await file.stat()
 
                 // If File instance is a directory, lookup for an index.html
                 if (stat.isDirectory) {
                     file.close()
-                    const filePath = Path.join("./", filepath, "index.html")
-                    file = await Deno.open(filePath, { read: true })
+                    file = await Deno.open(`${folder}/${path}/index.html`, { read: true })
                 }
             } catch {
                 // If the file cannot be opened, return a "404 Not Found" response
