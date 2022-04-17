@@ -2,14 +2,13 @@
 
 import { Console, blue } from "https://deno.land/x/quickr@0.3.13/main/console.js"
 import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
-import { run, Stdout, returnAsString, Overwrite } from "https://deno.land/x/quickr@0.3.13/main/run.js"
-import { projectRoot, projectSettings, createWorkspace } from "../../scripting_helpers/generate_workspace.js"
+import { run, Stdout, returnAsString, Overwrite, Cwd } from "https://deno.land/x/quickr@0.3.13/main/run.js"
+import { projectRoot, projectSettings, createWorkspace, tauriSrc } from "../../tauri_support/generate_workspace.js"
 
 // 
 // create workspace
 // 
-const tauriSrc = await createWorkspace(projectSettings.workspaceFolder)
-// var tauriSrc = `${projectRoot}/workspace.ignore/src-tauri`
+await createWorkspace()
 
 // 
 // create executable

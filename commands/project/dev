@@ -3,7 +3,7 @@
 import { Console } from "https://deno.land/x/quickr@0.3.13/main/console.js"
 import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
 import { run, Overwrite, Cwd } from "https://deno.land/x/quickr@0.3.13/main/run.js"
-import { projectSettings, tauriSettings, createWorkspace, server, frontendFolder, compiledFrontendFolder, tauriSrc } from "../../scripting_helpers/generate_workspace.js"
+import { projectSettings, tauriSettings, createWorkspace, server, frontendFolder, compiledFrontendFolder, tauriSrc } from "../../tauri_support/generate_workspace.js"
 
 // initial compile (includes compiling frontend)
 await createWorkspace()

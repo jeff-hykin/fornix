@@ -14,7 +14,7 @@ const projectSettings = JSON.parse(await FileSystem.read(`${projectRoot}/setting
 const tempDir = await Deno.makeTempDir()
 const mainFilePath = `${tempDir}/file.js`
 const bundleOutputFilePath = `${tempDir}/dist/file.js`
-const dependencyOutputPath = `${projectRoot}/scripting_helpers/dependencies/tauri_api@latest.js`
+const dependencyOutputPath = `${projectRoot}/tauri_support/dependencies/tauri_api@latest.js`
 await FileSystem.write({
     data: `
         import * as tauriAppsApi from '@tauri-apps/api'
