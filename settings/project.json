@@ -7,6 +7,48 @@
         "presets": [],
         "plugins": []
     },
+    "tauriReference": {
+        "apiDocs": "https://tauri.studio/docs/api/js/modules/app",
+        "tauriEventNames": [
+            "tauri://update",
+            "tauri://update-available",
+            "tauri://update-download-progress",
+            "tauri://update-install",
+            "tauri://update-status",
+            "tauri://resize",
+            "tauri://move",
+            "tauri://close-requested",
+            "tauri://focus",
+            "tauri://blur",
+            "tauri://scale-change",
+            "tauri://menu",
+            "tauri://file-drop",
+            "tauri://file-drop-hover",
+            "tauri://file-drop-cancelled"
+        ],
+        "specialFilePaths": [
+            "$AUDIO",
+            "$CACHE",
+            "$CONFIG",
+            "$DATA",
+            "$LOCALDATA",
+            "$DESKTOP",
+            "$DOCUMENT",
+            "$DOWNLOAD",
+            "$EXE",
+            "$FONT",
+            "$HOME",
+            "$PICTURE",
+            "$PUBLIC",
+            "$RUNTIME",
+            "$TEMPLATE",
+            "$VIDEO",
+            "$RESOURCE",
+            "$APP",
+            "$LOG",
+            "$TEMP"
+        ]
+    },
     "presetOptions": [
         "env",
         "es2015",
