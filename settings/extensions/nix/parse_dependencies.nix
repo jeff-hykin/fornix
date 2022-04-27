@@ -30,7 +30,7 @@
     # 
     nixSettings = (main.fromTOML
         (main.readFile 
-            ./settings/extensions/nix/settings.toml
+            ./settings.toml
         )
     );
     # 
