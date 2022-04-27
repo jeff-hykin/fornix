@@ -209,17 +209,17 @@ load = [ "jq",]
 #
 #
 
-# [[packages]]
-# load = [ "man",]
+[[packages]]
+load = [ "man",]
 
-# [[packages]]
-# load = [ "coreutils",]
+[[packages]]
+load = [ "coreutils",]
 
 # [[packages]]
 # load = [ "ripgrep",]
 
-# [[packages]]
-# load = [ "which",]
+[[packages]]
+load = [ "which",]
 
 [[packages]]
 load = [ "git",]
@@ -233,8 +233,8 @@ load = [ "tree",]
 # [[packages]]
 # load = [ "less",]
 
-# [[packages]]
-# load = [ "nano",]
+[[packages]]
+load = [ "nano",]
 
 # [[packages]]
 # load = [ "unzip",]
@@ -248,8 +248,8 @@ load = [ "tree",]
 # [[packages]]
 # load = [ "wget",]
 
-# [[packages]]
-# load = [ "curl",]
+[[packages]]
+load = [ "curl",]
 
 # [[packages]]
 # load = [ "unixtools", "arp",]
