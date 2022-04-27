@@ -38,7 +38,7 @@
     # 
     packageToml = (main.fromTOML
         (main.readFile
-            ./settings/requirements/system_tools.toml
+            ./settings/extensions/nix/nix.toml
         )
     );
     # 
