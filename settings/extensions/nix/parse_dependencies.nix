@@ -24,7 +24,7 @@
         )
         (builtins) # <- for import, fetchTarball, etc 
     );
-    pathToThisFile = ./settings/extensions/nix/parse_dependencies.nix;
+    pathToThisFile = ./parse_dependencies.nix;
     # 
     # pull info from the config files
     # 
