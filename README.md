@@ -1,3 +1,3 @@
-# Setup
+# Click the Run button at the top!
 
-Everything is detailed in the `documentation/setup.md`!
+(it'll take a while the first time)
