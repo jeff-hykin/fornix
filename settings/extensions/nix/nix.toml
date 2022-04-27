@@ -197,8 +197,8 @@ load = [ "spaceship-prompt",]
 # [[packages]]
 # load = [ "nnn",]
 
-# [[packages]]
-# load = [ "jq",]
+[[packages]]
+load = [ "jq",]
 
 # [[packages]]
 # load = [ "git-subrepo",]
