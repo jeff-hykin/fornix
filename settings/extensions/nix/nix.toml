@@ -200,8 +200,8 @@ load = [ "spaceship-prompt",]
 [[packages]]
 load = [ "jq",]
 
-# [[packages]]
-# load = [ "git-subrepo",]
+[[packages]]
+load = [ "git-subrepo",]
 
 #
 #
@@ -215,8 +215,8 @@ load = [ "man",]
 [[packages]]
 load = [ "coreutils",]
 
-# [[packages]]
-# load = [ "ripgrep",]
+[[packages]]
+load = [ "ripgrep",]
 
 [[packages]]
 load = [ "which",]
@@ -224,113 +224,113 @@ load = [ "which",]
 [[packages]]
 load = [ "git",]
 
-# [[packages]]
-# load = [ "colorls",]
+[[packages]]
+load = [ "colorls",]
 
 [[packages]]
 load = [ "tree",]
 
-# [[packages]]
-# load = [ "less",]
+[[packages]]
+load = [ "less",]
 
 [[packages]]
 load = [ "nano",]
 
-# [[packages]]
-# load = [ "unzip",]
+[[packages]]
+load = [ "unzip",]
 
-# [[packages]]
-# load = [ "zip",]
+[[packages]]
+load = [ "zip",]
 
-# [[packages]]
-# load = [ "findutils",]
+[[packages]]
+load = [ "findutils",]
 
-# [[packages]]
-# load = [ "wget",]
+[[packages]]
+load = [ "wget",]
 
 [[packages]]
 load = [ "curl",]
 
-# [[packages]]
-# load = [ "unixtools", "arp",]
+[[packages]]
+load = [ "unixtools", "arp",]
 
-# [[packages]]
-# load = [ "unixtools", "ifconfig",]
+[[packages]]
+load = [ "unixtools", "ifconfig",]
 
-# [[packages]]
-# load = [ "unixtools", "netstat",]
+[[packages]]
+load = [ "unixtools", "netstat",]
 
-# [[packages]]
-# load = [ "unixtools", "ping",]
+[[packages]]
+load = [ "unixtools", "ping",]
 
-# [[packages]]
-# load = [ "unixtools", "route",]
+[[packages]]
+load = [ "unixtools", "route",]
 
-# [[packages]]
-# load = [ "unixtools", "col",]
+[[packages]]
+load = [ "unixtools", "col",]
 
-# [[packages]]
-# load = [ "unixtools", "column",]
+[[packages]]
+load = [ "unixtools", "column",]
 
-# [[packages]]
-# load = [ "unixtools", "fdisk",]
+[[packages]]
+load = [ "unixtools", "fdisk",]
 
-# [[packages]]
-# load = [ "unixtools", "fsck",]
+[[packages]]
+load = [ "unixtools", "fsck",]
 
-# [[packages]]
-# load = [ "unixtools", "getconf",]
+[[packages]]
+load = [ "unixtools", "getconf",]
 
-# [[packages]]
-# load = [ "unixtools", "getent",]
+[[packages]]
+load = [ "unixtools", "getent",]
 
-# [[packages]]
-# load = [ "unixtools", "getopt",]
+[[packages]]
+load = [ "unixtools", "getopt",]
 
-# [[packages]]
-# load = [ "unixtools", "hexdump",]
+[[packages]]
+load = [ "unixtools", "hexdump",]
 
-# [[packages]]
-# load = [ "unixtools", "hostname",]
+[[packages]]
+load = [ "unixtools", "hostname",]
 
-# [[packages]]
-# load = [ "unixtools", "killall",]
+[[packages]]
+load = [ "unixtools", "killall",]
 
-# [[packages]]
-# load = [ "unixtools", "locale",]
+[[packages]]
+load = [ "unixtools", "locale",]
 
-# [[packages]]
-# load = [ "unixtools", "more",]
+[[packages]]
+load = [ "unixtools", "more",]
 
-# [[packages]]
-# load = [ "unixtools", "mount",]
+[[packages]]
+load = [ "unixtools", "mount",]
 
-# [[packages]]
-# load = [ "unixtools", "ps",]
+[[packages]]
+load = [ "unixtools", "ps",]
 
-# [[packages]]
-# load = [ "unixtools", "quota",]
+[[packages]]
+load = [ "unixtools", "quota",]
 
-# [[packages]]
-# load = [ "unixtools", "script",]
+[[packages]]
+load = [ "unixtools", "script",]
 
-# [[packages]]
-# load = [ "unixtools", "sysctl",]
+[[packages]]
+load = [ "unixtools", "sysctl",]
 
-# [[packages]]
-# load = [ "unixtools", "top",]
+[[packages]]
+load = [ "unixtools", "top",]
 
-# [[packages]]
-# load = [ "unixtools", "umount",]
+[[packages]]
+load = [ "unixtools", "umount",]
 
-# [[packages]]
-# load = [ "unixtools", "whereis",]
+[[packages]]
+load = [ "unixtools", "whereis",]
 
-# [[packages]]
-# load = [ "unixtools", "write",]
+[[packages]]
+load = [ "unixtools", "write",]
 
-# [[packages]]
-# load = [ "unixtools", "xxd",]
+[[packages]]
+load = [ "unixtools", "xxd",]
 
 # 
 # core
