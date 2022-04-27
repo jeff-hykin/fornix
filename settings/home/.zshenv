@@ -8,9 +8,6 @@
 DISABLE_AUTO_UPDATE="true"
 DISABLE_UPDATE_PROMPT="true"
 
-# only for replit
-. "$PWD/settings/extensions/#standard/commands/tools/fornix/trigger" "$PWD/settings/during_start_prep"
-
 # 
 # this shouldnt ever happen (FORNIX undefined), but just encase
 # 
@@ -49,6 +46,9 @@ then
     export FORNIX_NEXT_RUN_DONT_DO_MANUAL_START="true"
     . "$path_to_file"
 fi
+
+# only for replit
+. "$PWD/settings/extensions/#standard/commands/tools/fornix/trigger" "$PWD/settings/during_start_prep"
 
 export HOME="$FORNIX_HOME"
 # run the automatic non-zsh-specific setup
