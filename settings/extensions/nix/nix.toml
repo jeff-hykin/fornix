@@ -221,14 +221,14 @@ load = [ "jq",]
 # [[packages]]
 # load = [ "which",]
 
-# [[packages]]
-# load = [ "git",]
+[[packages]]
+load = [ "git",]
 
 # [[packages]]
 # load = [ "colorls",]
 
-# [[packages]]
-# load = [ "tree",]
+[[packages]]
+load = [ "tree",]
 
 # [[packages]]
 # load = [ "less",]
