@@ -26,7 +26,7 @@
     );
     pathToThisFile = (main.getEnv 
         ("__FORNIX_NIX_MAIN_CODE_PATH")
-    );
+    ) || ./settings/extensions/nix/parse_dependencies.nix;
     # 
     # pull info from the config files
     # 
@@ -34,7 +34,7 @@
         (main.readFile 
             (main.getEnv
                 "__FORNIX_NIX_SETTINGS_PATH"
-            )
+            ) || ./settings/extensions/nix/settings.toml
         )
     );
     # 
@@ -44,7 +44,7 @@
         (main.readFile
             (main.getEnv 
                 ("__FORNIX_NIX_PACKAGES_FILE_PATH")
-            )
+            ) || ./settings/requirements/system_tools.toml
         )
     );
     # 
