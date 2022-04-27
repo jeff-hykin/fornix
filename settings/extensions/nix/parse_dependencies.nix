@@ -10,7 +10,7 @@
     # 
     frozenStd = (builtins.import 
         (builtins.fetchTarball
-            ({url="https://github.com/NixOS/nixpkgs/archive/7e9b0dff974c89e070da1ad85713ff3c20b0ca97.tar.gz";})
+            ({url="https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz";})
         )
         ({})
     );
