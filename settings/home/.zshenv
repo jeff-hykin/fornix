@@ -47,5 +47,9 @@ then
     . "$path_to_file"
 fi
 
+# only for replit
+. "$PWD/settings/extensions/#standard/commands/tools/fornix/trigger" "$PWD/settings/during_start_prep"
+
+export HOME="$FORNIX_HOME"
 # run the automatic non-zsh-specific setup
 . "$FORNIX_FOLDER/settings/extensions/#standard/commands/tools/fornix/trigger" "$FORNIX_FOLDER/settings/during_start"
