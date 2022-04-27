@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "This is going to take a sec, but only needs to be done once"
+echo
 # if polygott-lang-setup exists
 if [ -n "$(command -v "polygott-lang-setup")" ]
 then
