@@ -53,24 +53,24 @@
 # 
 # Linux
 # 
-# [[packages]]
-# load = [ "pkgconfig",]
-# asNativeBuildInput = true
-# onlyIf = [ [ "stdenv", "isLinux",],]
+[[packages]]
+load = [ "pkgconfig",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
 
-# [[packages]]
-# load = [ "libconfig",]
-# asNativeBuildInput = true
-# onlyIf = [ [ "stdenv", "isLinux",],]
+[[packages]]
+load = [ "libconfig",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
 
-# [[packages]]
-# load = [ "cmake",]
-# asNativeBuildInput = true
-# onlyIf = [ [ "stdenv", "isLinux",],]
+[[packages]]
+load = [ "cmake",]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isLinux",],]
 
-# [[packages]]
-# load = [ "stdenv", "cc",]
-# onlyIf = [ [ "stdenv", "isLinux",],]
+[[packages]]
+load = [ "stdenv", "cc",]
+onlyIf = [ [ "stdenv", "isLinux",],]
 
 # 
 # Mac
@@ -138,11 +138,11 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 # 
 # both often need
 # 
-# [[packages]]
-# load = [ "gcc",]
+[[packages]]
+load = [ "gcc",]
 
-# [[packages]]
-# load = [ "libkrb5",]
+[[packages]]
+load = [ "libkrb5",]
 
 # 
 # 
@@ -150,34 +150,34 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 # 
 # 
 
-# [[packages]]
-# load = [ "ncurses5",]
+[[packages]]
+load = [ "ncurses5",]
 
-# [[packages]]
-# load = [ "openssh",]
+[[packages]]
+load = [ "openssh",]
 
 # 
 # 
 # fancy command line tools
 # 
 # 
-# [[packages]]
-# load = [ "fd",]
+[[packages]]
+load = [ "fd",]
 
-# [[packages]]
-# load = [ "sd",]
+[[packages]]
+load = [ "sd",]
 
-# [[packages]]
-# load = [ "dua",]
+[[packages]]
+load = [ "dua",]
 
-# [[packages]]
-# load = [ "tealdeer",]
+[[packages]]
+load = [ "tealdeer",]
 
-# [[packages]]
-# load = [ "bottom",]
+[[packages]]
+load = [ "bottom",]
 
-# [[packages]]
-# load = [ "exa",]
+[[packages]]
+load = [ "exa",]
 
 [[packages]]
 load = [ "zsh",]
@@ -194,8 +194,8 @@ load = [ "zsh-autosuggestions",]
 [[packages]]
 load = [ "spaceship-prompt",]
 
-# [[packages]]
-# load = [ "nnn",]
+[[packages]]
+load = [ "nnn",]
 
 [[packages]]
 load = [ "jq",]
