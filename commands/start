@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# if polygott-lang-setup exists
+if [ -n "$(command -v "polygott-lang-setup")" ]
+then
+    polygott-lang-setup -l nix   # for replit
+fi
+
 # 
 # summary
 # 
