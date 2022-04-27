@@ -1,1 +1,1 @@
-run = "ln -s $PWD/settings/home/.zshenv $HOME/.zshenv; zsh"
+run = "ln -s $PWD/settings/home/.zshenv $HOME/.zshenv 2>/dev/null; zsh"
