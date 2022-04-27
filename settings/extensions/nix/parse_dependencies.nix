@@ -24,17 +24,13 @@
         )
         (builtins) # <- for import, fetchTarball, etc 
     );
-    pathToThisFile = (main.getEnv 
-        ("__FORNIX_NIX_MAIN_CODE_PATH")
-    ) || ./settings/extensions/nix/parse_dependencies.nix;
+    pathToThisFile = ./settings/extensions/nix/parse_dependencies.nix;
     # 
     # pull info from the config files
     # 
     nixSettings = (main.fromTOML
         (main.readFile 
-            (main.getEnv
-                "__FORNIX_NIX_SETTINGS_PATH"
-            ) || ./settings/extensions/nix/settings.toml
+            ./settings/extensions/nix/settings.toml
         )
     );
     # 
@@ -42,9 +38,7 @@
     # 
     packageToml = (main.fromTOML
         (main.readFile
-            (main.getEnv 
-                ("__FORNIX_NIX_PACKAGES_FILE_PATH")
-            ) || ./settings/requirements/system_tools.toml
+            ./settings/requirements/system_tools.toml
         )
     );
     # 
