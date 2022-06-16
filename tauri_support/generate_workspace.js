@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console, blue } from "https://deno.land/x/quickr@0.3.13/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
-import { OperatingSystem } from "https://deno.land/x/quickr@0.3.13/main/operating_system.js"
-import { Overwrite, run } from "https://deno.land/x/quickr@0.3.13/main/run.js"
+import { Console, blue } from "https://deno.land/x/quickr@0.3.32/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.3.32/main/file_system.js"
+import { OperatingSystem } from "https://deno.land/x/quickr@0.3.32/main/operating_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.3.32/main/run.js"
 import { findAll } from "https://deno.land/x/good@0.4.1/string.js"
 import * as Path from "https://deno.land/std@0.128.0/path/mod.ts"
 import { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/mod.ts";
@@ -78,6 +78,16 @@ export async function relativeLink({existingItem, newItem, force=true}) {
 }
 
 export async function createWorkspace() {
+    // create the workspace otherwise there will be problems because of the root Cargo.toml file
+    await FileSystem.write({
+        path: `${tauriSrc}/../Cargo.toml`,
+        data: `
+            [workspace]
+            members = ["src-tauri", ]
+            exclude = []
+        `.replace('\n            ',"\n")
+    })
+    
     // frontend is special
     const [ frontendExisting, frontendTarget ] = [ frontendFolder, `${tauriSrc}/frontend` ]
     // others are not

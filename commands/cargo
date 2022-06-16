@@ -1,0 +1,26 @@
+#!/usr/bin/env -S deno run --allow-all
+
+import { Console, blue } from "https://deno.land/x/quickr@0.3.32/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.3.32/main/file_system.js"
+import { run, Stdout, returnAsString, Overwrite, Cwd } from "https://deno.land/x/quickr@0.3.32/main/run.js"
+import { projectRoot, projectSettings, createWorkspace, tauriSrc } from "../tauri_support/generate_workspace.js"
+
+
+
+let cargoPaths = await run('which', "-a", "cargo", Stdout(returnAsString))
+cargoPaths = cargoPaths.split('\n').filter(each=>each.length)
+cargoPaths.shift()
+const realPath = cargoPaths[0]
+
+// 
+// create workspace if needed
+// 
+const pathInfo = await FileSystem.info(tauriSrc)
+if (!pathInfo.exists) {
+    await createWorkspace()
+}
+
+// 
+// run cargo inside the workspace
+// 
+await run(realPath, ...Deno.args, Cwd(tauriSrc))
