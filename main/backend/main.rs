@@ -1,4 +1,26 @@
-#![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows" )]
+
+#![cfg_attr(
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
+)]
+
+use std::env;
+use std::ptr;
+
+use deno_core::Extension;
+use deno_core::JsRuntime;
+use deno_core::RuntimeOptions;
+use deno_core::v8;
+use deno_core::op;
+use deno_core::*;
+
+use serde_v8;
+use serde_json::json;
+use std::{thread, time};
+
+static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
+static mut RUNTIME_IN_USE: bool = false;
+
 fn main() {
     let ext = Extension::builder().build();
     let runtime = JsRuntime::new(RuntimeOptions {
@@ -9,8 +31,30 @@ fn main() {
         RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
     };
     
+    // tauri::Builder::default()
+        
+    //     .on_page_load(|window, _payload| {
+    //         let label = window.label().to_string();
+    //         window.listen("clicked".to_string(), move |_payload| {
+    //             println!("got 'clicked' event on window '{}'", label);
+    //         });
+    //     })
+    //     .setup(|app| {
+    //         WindowBuilder::new(
+    //             app,
+    //             "Rust".to_string(),
+    //             tauri::WindowUrl::App("index.html".into()),
+    //         )
+    //         .title("Tauri - Rust")
+    //         .build()?;
+    //         Ok(())
+    //     })
+    //     .run(context)
+    //     .expect("failed to run tauri application");
+    
     
     tauri::Builder::default()
+        // .menu(tauri::Menu::os_default(&context.package_info().name))
         .invoke_handler(tauri::generate_handler![run_deno])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -18,33 +62,6 @@ fn main() {
     // use runtime at the end so rust doesn't optimize it away
     // (theres got to be a better way to do this)
     println!("runtime {:p}", &runtime);
-}
-
-
-use std::env;
-use std::ptr;
-
-use deno_core::v8;
-use deno_core::Extension;
-use deno_core::JsRuntime;
-use deno_core::RuntimeOptions;
-use serde_v8;
-use serde_json::json;
-use std::{thread, time};
-
-// static mut ext_ptr: *const Extension = ptr::null() as *const Extension;
-static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
-static mut RUNTIME_IN_USE: bool = false;
-
-use deno_core::op;
-use deno_core::*;
-
-#[op]
-fn op_sum(nums: Vec<f64>) -> Result<f64, deno_core::error::AnyError> {
-    // Sum inputs
-    let sum = nums.iter().fold(0.0, |a, v| a + v);
-    // return as a Result<f64, AnyError>
-    Ok(sum)
 }
 
 #[tauri::command]
@@ -55,7 +72,7 @@ fn run_deno(code: String) -> String {
             thread::sleep(time::Duration::from_millis(50));
         }
         RUNTIME_IN_USE = true;
-        let mut context = &mut (*RUNTIME_PTR);
+        let context = &mut (*RUNTIME_PTR);
         let result = context.execute_script("<anon>", &code);
         let output = match result {
             Ok(global) => {
@@ -75,4 +92,40 @@ fn run_deno(code: String) -> String {
         RUNTIME_IN_USE = false;
         output
     }
+}
+
+// https://tauri.app/v1/guides/features/command/#accessing-the-window-in-commands
+// #[tauri::command]
+// async fn my_custom_command(window: tauri::Window) {
+//     window.emit
+//     println!("Window: {}", window.label());
+// }
+
+// https://tauri.app/v1/guides/features/command/#accessing-an-apphandle-in-commands
+// #[tauri::command]
+// async fn my_custom_command(app_handle: tauri::AppHandle) {
+//   let app_dir = app_handle.path_resolver().app_dir();
+//   use tauri::GlobalShortcutManager;
+//   app_handle.global_shortcut_manager().register("CTRL + U", move || {});
+// }
+
+// struct MyState(String);
+// #[tauri::command]
+// fn my_custom_command(state: tauri::State<MyState>) {
+//   assert_eq!(state.0 == "some state value", true);
+// }
+// fn main() {
+//   tauri::Builder::default()
+//     .manage(MyState("some state value".into()))
+//     .invoke_handler(tauri::generate_handler![my_custom_command])
+//     .run(tauri::generate_context!())
+//     .expect("error while running tauri application");
+// }
+
+#[op]
+fn op_sum(nums: Vec<f64>) -> Result<f64, deno_core::error::AnyError> {
+    // Sum inputs
+    let sum = nums.iter().fold(0.0, |a, v| a + v);
+    // return as a Result<f64, AnyError>
+    Ok(sum)
 }
