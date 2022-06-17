@@ -11,32 +11,24 @@ fn main() {
     // }
     // println!("{:?}", args);
     
-    RUNTIME.get_or_init(|| {
-        let ext = Extension::builder().build();
-        Arc::new(Mutex::new(JsRuntime::new(RuntimeOptions {
-            extensions: vec![ext],
-            ..Default::default()
-        })));
+    let ext = Extension::builder()
+        .ops(vec![
+            // An op for summing an array of numbers
+            // The op-layer automatically deserializes inputs
+            // and serializes the returned Result & value
+            // op_sum::decl(),
+        ])
+        .build();
+    // Initialize a runtime instance
+    let runtime = JsRuntime::new(RuntimeOptions {
+        extensions: vec![ext],
+        ..Default::default()
     });
     
-    // let ext = Extension::builder()
-    //     .ops(vec![
-    //         // An op for summing an array of numbers
-    //         // The op-layer automatically deserializes inputs
-    //         // and serializes the returned Result & value
-    //         // op_sum::decl(),
-    //     ])
-    //     .build();
-    // // Initialize a runtime instance
-    // let runtime = JsRuntime::new(RuntimeOptions {
-    //     extensions: vec![ext],
-    //     ..Default::default()
-    // });
-    
-    // unsafe {
-    //     // convert the reference to a raw pointer, and the raw pointer to another pointer
-    //     RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
-    // };
+    unsafe {
+        // convert the reference to a raw pointer, and the raw pointer to another pointer
+        RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
+    };
     
     
     tauri::Builder::default()
@@ -46,7 +38,7 @@ fn main() {
     
     // use runtime at the end so rust doesn't optimize it away
     // (theres got to be a better way to do this)
-    // println!("runtime {:p}", &runtime);
+    println!("runtime {:p}", &runtime);
 }
 
 
@@ -61,26 +53,9 @@ use deno_core::RuntimeOptions;
 use serde_v8;
 use std::{thread, time};
 
-use once_cell::unsync::OnceCell;
-use std::sync::Arc;
-use std::sync::Mutex;
-
-static RUNTIME: OnceCell<Arc<Mutex<JsRuntime>>> = OnceCell::new();
-
-// #[Decorator]
-// fn run_deno(invoke_message: String) {
-//     RUNTIME.lock()
-//       .unwrap()
-//       .execute_script(
-//         "<usage>",
-//         &invoke_message,
-//        )
-//        .unwrap();
-// }
-
 // static mut ext_ptr: *const Extension = ptr::null() as *const Extension;
-// static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
-// static mut RUNTIME_IN_USE: bool = false;
+static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
+static mut RUNTIME_IN_USE: bool = false;
 
 // // This is a hack to make the `#[op]` macro work with
 // // deno_core examples.
@@ -95,58 +70,48 @@ static RUNTIME: OnceCell<Arc<Mutex<JsRuntime>>> = OnceCell::new();
 //     Ok(sum)
 // }
 
-// fn eval(
-//     context: &mut JsRuntime,
-//     code: &String,
-// ) -> String {
-//     let res = context.execute_script("<anon>", code);
-//     match res {
-//         Ok(global) => {
-//             let scope = &mut context.handle_scope();
-//             let local = v8::Local::new(scope, global);
-//             // Deserialize a `v8` object into a Rust type using `serde_v8`,
-//             // in this case deserialize to a JSON `Value`.
-//             let deserialized_value = serde_v8::from_v8::<serde_json::Value>(scope, local);
+fn eval(
+    context: &mut JsRuntime,
+    code: &String,
+) -> String {
+    let res = context.execute_script("<anon>", code);
+    match res {
+        Ok(global) => {
+            let scope = &mut context.handle_scope();
+            let local = v8::Local::new(scope, global);
+            // Deserialize a `v8` object into a Rust type using `serde_v8`,
+            // in this case deserialize to a JSON `Value`.
+            let deserialized_value = serde_v8::from_v8::<serde_json::Value>(scope, local);
 
-//             match deserialized_value {
-//                 Ok(value) => {
-//                     let as_string = serde_json::to_string(&value);
-//                     match as_string {
-//                         Ok(value) => format!("{{ \"v\": {:?} }}", value),
-//                         Err(err) => format!("{{ \"e\": {:?} }}", err),
-//                     }
-//                 },
-//                 Err(err) => format!("{{ \"e\": {:?} }}", err),
-//             }
-//         }
-//         Err(err) => format!("{{ \"e\": {:?} }}", err),
-//     }
-// }
-
-#[tauri::command]
-fn run_deno(invoke_message: String) {
-    RUNTIME.lock()
-      .unwrap()
-      .execute_script(
-        "<usage>",
-        &invoke_message,
-       )
-       .unwrap();
+            match deserialized_value {
+                Ok(value) => {
+                    let as_string = serde_json::to_string(&value);
+                    match as_string {
+                        Ok(value) => format!("{{ \"v\": {:?} }}", value),
+                        Err(err) => format!("{{ \"e\": {:?} }}", err),
+                    }
+                },
+                Err(err) => format!("{{ \"e\": {:?} }}", err),
+            }
+        }
+        Err(err) => format!("{{ \"e\": {:?} }}", err),
+    }
 }
 
-// fn run_deno(invoke_message: String) -> String {
-//     println!("I was invoked from JS, with this message: {}", invoke_message);
-//     unsafe {
-//         // some primitive thread blocking (bools are threadsafe right?)
-//         while RUNTIME_IN_USE {
-//             thread::sleep(time::Duration::from_millis(50));
-//         }
-//         RUNTIME_IN_USE = true;
-//         let output = eval(
-//             &mut (*RUNTIME_PTR),
-//             &invoke_message
-//         );
-//         RUNTIME_IN_USE = false;
-//         output
-//     }
-// }
+#[tauri::command]
+fn run_deno(invoke_message: String) -> String {
+    println!("I was invoked from JS, with this message: {}", invoke_message);
+    unsafe {
+        // some primitive thread blocking (bools are threadsafe right?)
+        while RUNTIME_IN_USE {
+            thread::sleep(time::Duration::from_millis(50));
+        }
+        RUNTIME_IN_USE = true;
+        let output = eval(
+            &mut (*RUNTIME_PTR),
+            &invoke_message
+        );
+        RUNTIME_IN_USE = false;
+        output
+    }
+}
