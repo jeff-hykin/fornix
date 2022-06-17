@@ -1,32 +1,11 @@
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows" )]
 fn main() {
-    // let args: Vec<String> = env::args().collect();
-    // let this_file = args[0];
-    // if args.len() >= 1 {
-    //     if args[1] == "deno" {
-    //         let mut p = Popen::create(&[this_file, "-A"], PopenConfig {
-    //             stdout: Redirection::Pipe, ..Default::default()
-    //         })?;
-    //     }
-    // }
-    // println!("{:?}", args);
-    
-    let ext = Extension::builder()
-        .ops(vec![
-            // An op for summing an array of numbers
-            // The op-layer automatically deserializes inputs
-            // and serializes the returned Result & value
-            // op_sum::decl(),
-        ])
-        .build();
-    // Initialize a runtime instance
+    let ext = Extension::builder().build();
     let runtime = JsRuntime::new(RuntimeOptions {
         extensions: vec![ext],
         ..Default::default()
     });
-    
     unsafe {
-        // convert the reference to a raw pointer, and the raw pointer to another pointer
         RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
     };
     
@@ -51,6 +30,7 @@ use deno_core::Extension;
 use deno_core::JsRuntime;
 use deno_core::RuntimeOptions;
 use serde_v8;
+use serde_json::json;
 use std::{thread, time};
 
 // static mut ext_ptr: *const Extension = ptr::null() as *const Extension;
@@ -84,17 +64,11 @@ fn eval(
             let deserialized_value = serde_v8::from_v8::<serde_json::Value>(scope, local);
 
             match deserialized_value {
-                Ok(value) => {
-                    let as_string = serde_json::to_string(&value);
-                    match as_string {
-                        Ok(value) => format!("{{ \"v\": {:?} }}", value),
-                        Err(err) => format!("{{ \"e\": {:?} }}", err),
-                    }
-                },
-                Err(err) => format!("{{ \"e\": {:?} }}", err),
+                Ok(value) => json!({ "v": value}).to_string(),
+                Err(err) => json!({ "e": format!("{:?}", err)}).to_string(),
             }
         }
-        Err(err) => format!("{{ \"e\": {:?} }}", err),
+        Err(err) => json!({ "e": format!("{:?}", err)}).to_string(),
     }
 }
 
