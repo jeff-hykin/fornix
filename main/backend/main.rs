@@ -28,7 +28,6 @@ fn main() {
     unsafe {
         // convert the reference to a raw pointer, and the raw pointer to another pointer
         RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
-        println!("RUNTIME_PTR {:?}", RUNTIME_PTR);
     };
     
     
@@ -90,7 +89,8 @@ static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRunt
 // }
 
 #[tauri::command]
-fn run_deno(invoke_message: String) {
+fn run_deno(invoke_message: String) -> String {
+    println!("I was invoked from JS, with this message: {}", invoke_message);
     unsafe {
         (*RUNTIME_PTR).execute_script(
             "<usage>",
@@ -98,4 +98,5 @@ fn run_deno(invoke_message: String) {
         )
         .unwrap();
     }
+    "Hello from Rust!".into()
 }
