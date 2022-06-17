@@ -1,9 +1,9 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console, blue } from "https://deno.land/x/quickr@0.3.32/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.3.32/main/file_system.js"
-import { OperatingSystem } from "https://deno.land/x/quickr@0.3.32/main/operating_system.js"
-import { Overwrite, run } from "https://deno.land/x/quickr@0.3.32/main/run.js"
+import { Console, blue } from "https://deno.land/x/quickr@0.3.34/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.3.34/main/file_system.js"
+import { OperatingSystem } from "https://deno.land/x/quickr@0.3.34/main/operating_system.js"
+import { Overwrite, run } from "https://deno.land/x/quickr@0.3.34/main/run.js"
 import { findAll } from "https://deno.land/x/good@0.4.1/string.js"
 import * as Path from "https://deno.land/std@0.128.0/path/mod.ts"
 import { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/mod.ts";
@@ -59,24 +59,6 @@ const babelCompileTimePath = `${projectRoot}/tauri_support/dependencies/babel@v7
 const packupInstallerSource = "https://deno.land/x/packup@v0.1.12/install.ts"
 const transpileOptions = projectSettings.transpileOptions
 
-export async function relativeLink({existingItem, newItem, force=true}) {
-    existingItem = existingItem.path || existingItem
-    newItem = newItem.path || newItem // if given ItemInfo object
-    
-    const existingItemDoesntExist = (await Deno.lstat(existingItem).catch(()=>({doesntExist: true}))).doesntExist
-    // if the item doesnt exists
-    if (existingItemDoesntExist) {
-        throw Error(`\nTried to create a relativeLink between existingItem:${existingItem}, newItem:${newItem}\nbut existingItem didn't actually exist`)
-    } else {
-        if (force) {
-            await FileSystem.remove(newItem)
-            await FileSystem.ensureIsFolder(FileSystem.dirname(newItem))
-        }
-        const pathFromNewToExisting = Path.relative(newItem, existingItem).replace(/^\.\.\//,"")
-        return Deno.symlink(pathFromNewToExisting, newItem)
-    }
-}
-
 export async function createWorkspace() {
     // create the workspace otherwise there will be problems because of the root Cargo.toml file
     await FileSystem.write({
@@ -106,7 +88,7 @@ export async function createWorkspace() {
         if (itemInfo.doesntExist) {
             throw Error(`\n\nWhen trying to generate the Tauri workspace, I was looking for ${itemInfo.relativePathFrom(projectRoot)}\nHowever, I couldn't find it and it is necessary for building tauri`)
         } else {
-            await relativeLink({
+            await FileSystem.relativeLink({
                 existingItem: eachExistingPath,
                 newItem: eachTargetPath,
             })
@@ -164,7 +146,7 @@ export async function compileFrontend({ frontendExisting, frontendTarget }) {
     }
     
     // connect after transpiling
-    await relativeLink({
+    await FileSystem.relativeLink({
         existingItem: babelRuntimePath,
         newItem: babelRuntimeTarget,
     })
