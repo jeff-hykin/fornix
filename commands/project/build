@@ -23,8 +23,7 @@ if (!success) {
 // 
 if (success) {
     if (Deno.build.os == "darwin") {
-        await FileSystem.remove(`${tauriSrc}/../target/release/bundle/macos/`)
-        // /Users/jeffhykin/repos/fornix/rw.fornix-tauri_0.1.0_x64.dmg
+        await FileSystem.remove(`${tauriSrc}/../../target/release/bundle/macos/`)
     } else if (Deno.build.os == "linux") {
         const systemPackagesInfo = JSON.parse(FileSystem.read(Console.env.__FORNIX_NIX_PATH_EXPORT_FILE))
         const webkitGtkPath = systemPackagesInfo.libPathFor["gnome.webkitgtk"]

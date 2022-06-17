@@ -1,12 +1,6 @@
-#![feature(new_uninit)]
-
 #![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows" )]
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    // unsafe {
-    //     ADDRESS = 10 as *const u32;
-    //     println!("ADDRESS {:?}", ADDRESS);
-    // };
+    // let args: Vec<String> = env::args().collect();
     // let this_file = args[0];
     // if args.len() >= 1 {
     //     if args[1] == "deno" {
@@ -15,12 +9,37 @@ fn main() {
     //         })?;
     //     }
     // }
-    println!("{:?}", args);
+    // println!("{:?}", args);
+    
+    let ext = Extension::builder()
+        .ops(vec![
+            // An op for summing an array of numbers
+            // The op-layer automatically deserializes inputs
+            // and serializes the returned Result & value
+            // op_sum::decl(),
+        ])
+        .build();
+    // Initialize a runtime instance
+    let runtime = JsRuntime::new(RuntimeOptions {
+        extensions: vec![ext],
+        ..Default::default()
+    });
+    
+    unsafe {
+        // convert the reference to a raw pointer, and the raw pointer to another pointer
+        RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
+        println!("RUNTIME_PTR {:?}", RUNTIME_PTR);
+    };
+    
     
     tauri::Builder::default()
-        // .invoke_handler(tauri::generate_handler![run_deno])
+        .invoke_handler(tauri::generate_handler![run_deno])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+    
+    // use runtime at the end so rust doesn't optimize it away
+    // (theres got to be a better way to do this)
+    println!("runtime {:p}", &runtime);
 }
 
 
@@ -31,9 +50,9 @@ use deno_core::op;
 use deno_core::Extension;
 use deno_core::JsRuntime;
 use deno_core::RuntimeOptions;
-use std::mem::{self, MaybeUninit};
 
-static mut runtime: Box<MaybeUninit<Extension>> = Box::<Extension>::new_uninit();
+// static mut ext_ptr: *const Extension = ptr::null() as *const Extension;
+static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
 
 // // This is a hack to make the `#[op]` macro work with
 // // deno_core examples.
@@ -70,40 +89,13 @@ static mut runtime: Box<MaybeUninit<Extension>> = Box::<Extension>::new_uninit()
 //     }
 // }
 
-// #[tauri::command]
-// fn run_deno(invoke_message: String) {
-//     unsafe {
-//         if ADDRESS == 0 {
-//             // 
-//             // const { invoke } = window.__TAURI__
-//             // invoke('deno_run', { invokeMessage: 'Hello!' })
-//             // 
-//             // Build a deno_core::Extension providing custom ops
-//             let ext = Extension::builder()
-//                 .ops(vec![
-//                     // An op for summing an array of numbers
-//                     // The op-layer automatically deserializes inputs
-//                     // and serializes the returned Result & value
-//                     op_sum::decl(),
-//                 ])
-//                 .build();
-
-//             // Initialize a runtime instance
-//             let mut runtime = JsRuntime::new(RuntimeOptions {
-//                 extensions: vec![ext],
-//                 ..Default::default()
-//             });
-//         }
-//     }
-
-//     // Now we see how to invoke the op we just defined. The runtime automatically
-//     // contains a Deno.core object with several functions for interacting with it.
-//     // You can find its definition in core.js.
-//     // eval(&runtime, )
-//     runtime
-//         .execute_script(
-//             "<usage>",
-//             &invoke_message,
-//         )
-//         .unwrap();
-// }
+#[tauri::command]
+fn run_deno(invoke_message: String) {
+    unsafe {
+        (*RUNTIME_PTR).execute_script(
+            "<usage>",
+            &invoke_message,
+        )
+        .unwrap();
+    }
+}
