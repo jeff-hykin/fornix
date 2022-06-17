@@ -9,7 +9,6 @@ import * as Path from "https://deno.land/std@0.128.0/path/mod.ts"
 import { readableStreamFromReader } from "https://deno.land/std@0.135.0/streams/mod.ts";
 
 export const projectRoot = Console.env.FORNIX_FOLDER||FileSystem.pwd
-console.debug(`projectRoot is:`,projectRoot)
 const projectSettingsPath = `${projectRoot}/settings/project.json`
 const tauriSettingsPath = `${projectRoot}/settings/tauri.conf.json`
 let maybeProjectSettings, maybeTauriSettings

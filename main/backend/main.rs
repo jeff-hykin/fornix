@@ -46,9 +46,11 @@ use std::env;
 use std::ptr;
 
 use deno_core::op;
+use deno_core::v8;
 use deno_core::Extension;
 use deno_core::JsRuntime;
 use deno_core::RuntimeOptions;
+use serde_v8;
 use std::{thread, time};
 
 // static mut ext_ptr: *const Extension = ptr::null() as *const Extension;
@@ -68,28 +70,33 @@ static mut RUNTIME_IN_USE: bool = false;
 //     Ok(sum)
 // }
 
-// fn eval(
-//     context: &mut JsRuntime,
-//     code: &str,
-// ) -> String {
-//     let res = context.execute_script("<anon>", code);
-//     match res {
-//         Ok(global) => {
-//             let scope = &mut context.handle_scope();
-//             let local = v8::Local::new(scope, global);
-//             // Deserialize a `v8` object into a Rust type using `serde_v8`,
-//             // in this case deserialize to a JSON `Value`.
-//             let deserialized_value = serde_v8::from_v8::<serde_json::Value>(scope, local);
-//             let as_string = serde_json::to_string(&deserialized_value)?;
+fn eval(
+    context: &mut JsRuntime,
+    code: &String,
+) -> String {
+    let res = context.execute_script("<anon>", code);
+    match res {
+        Ok(global) => {
+            let scope = &mut context.handle_scope();
+            let local = v8::Local::new(scope, global);
+            // Deserialize a `v8` object into a Rust type using `serde_v8`,
+            // in this case deserialize to a JSON `Value`.
+            let deserialized_value = serde_v8::from_v8::<serde_json::Value>(scope, local);
 
-//             match deserialized_value {
-//                 Ok(value) => Ok(value),
-//                 Err(err) => Err(format!("Cannot deserialize value: {:?}", err)),
-//             }
-//         }
-//         Err(err) => Err(format!("Evaling error: {:?}", err)),
-//     }
-// }
+            match deserialized_value {
+                Ok(value) => {
+                    let as_string = serde_json::to_string(&value);
+                    match as_string {
+                        Ok(value) => format!("{{ \"v\": {:?} }}", value),
+                        Err(err) => format!("{{ \"e\": {:?} }}", err),
+                    }
+                },
+                Err(err) => format!("{{ \"e\": {:?} }}", err),
+            }
+        }
+        Err(err) => format!("{{ \"e\": {:?} }}", err),
+    }
+}
 
 #[tauri::command]
 fn run_deno(invoke_message: String) -> String {
@@ -100,12 +107,11 @@ fn run_deno(invoke_message: String) -> String {
             thread::sleep(time::Duration::from_millis(50));
         }
         RUNTIME_IN_USE = true;
-        (*RUNTIME_PTR).execute_script(
-            "<usage>",
-            &invoke_message,
-        )
-        .unwrap();
+        let output = eval(
+            &mut (*RUNTIME_PTR),
+            &invoke_message
+        );
         RUNTIME_IN_USE = false;
+        output
     }
-    "Hello from Rust!".into()
 }
