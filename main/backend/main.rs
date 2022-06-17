@@ -49,9 +49,11 @@ use deno_core::op;
 use deno_core::Extension;
 use deno_core::JsRuntime;
 use deno_core::RuntimeOptions;
+use std::{thread, time};
 
 // static mut ext_ptr: *const Extension = ptr::null() as *const Extension;
 static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
+static mut RUNTIME_IN_USE: bool = false;
 
 // // This is a hack to make the `#[op]` macro work with
 // // deno_core examples.
@@ -69,7 +71,7 @@ static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRunt
 // fn eval(
 //     context: &mut JsRuntime,
 //     code: &str,
-// ) -> Result<serde_json::Value, String> {
+// ) -> String {
 //     let res = context.execute_script("<anon>", code);
 //     match res {
 //         Ok(global) => {
@@ -78,6 +80,7 @@ static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRunt
 //             // Deserialize a `v8` object into a Rust type using `serde_v8`,
 //             // in this case deserialize to a JSON `Value`.
 //             let deserialized_value = serde_v8::from_v8::<serde_json::Value>(scope, local);
+//             let as_string = serde_json::to_string(&deserialized_value)?;
 
 //             match deserialized_value {
 //                 Ok(value) => Ok(value),
@@ -92,11 +95,17 @@ static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRunt
 fn run_deno(invoke_message: String) -> String {
     println!("I was invoked from JS, with this message: {}", invoke_message);
     unsafe {
+        // some primitive thread blocking (bools are threadsafe right?)
+        while RUNTIME_IN_USE {
+            thread::sleep(time::Duration::from_millis(50));
+        }
+        RUNTIME_IN_USE = true;
         (*RUNTIME_PTR).execute_script(
             "<usage>",
             &invoke_message,
         )
         .unwrap();
+        RUNTIME_IN_USE = false;
     }
     "Hello from Rust!".into()
 }
