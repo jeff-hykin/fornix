@@ -66,7 +66,8 @@ export async function createWorkspace() {
             [workspace]
             members = ["src-tauri", ]
             exclude = []
-        `.replace('\n            ',"\n")
+            resolver = "2"
+        `.replace(/\n            /g,"\n")
     })
     
     // frontend is special

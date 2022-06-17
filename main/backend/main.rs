@@ -7,32 +7,106 @@
 use std::env;
 use std::ptr;
 
+use deno_core;
 use deno_core::Extension;
 use deno_core::JsRuntime;
 use deno_core::RuntimeOptions;
+use deno_core::FsModuleLoader;
 use deno_core::v8;
 use deno_core::op;
 use deno_core::*;
 
+use deno_runtime;
+use deno_runtime::permissions::Permissions;
+
+use deno_bench_util;
+use deno_broadcast_channel;
+use deno_console;
+use deno_crypto;
+use deno_fetch;
+use deno_ffi;
+use deno_http;
+use deno_net;
+use deno_tls;
+use deno_url;
+use deno_web;
+use deno_webgpu;
+use deno_webidl;
+use deno_websocket;
+use deno_webstorage;
+use deno_ops;
 use serde_v8;
+
 use serde_json::json;
 use std::{thread, time};
 
 static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
 static mut RUNTIME_IN_USE: bool = false;
 
+#[op]
+fn op_sum(nums: Vec<f64>) -> Result<f64, deno_core::error::AnyError> {
+    // Sum inputs
+    let sum = nums.iter().fold(0.0, |a, v| a + v);
+    // return as a Result<f64, AnyError>
+    Ok(sum)
+}
+
 fn main() {
-    let ext = Extension::builder().build();
+    let ext = Extension::builder().ops(vec![
+            // An op for summing an array of numbers
+            // The op-layer automatically deserializes inputs
+            // and serializes the returned Result & value
+            op_sum::decl(),
+        ]).build();
     let runtime = JsRuntime::new(RuntimeOptions {
-        extensions: vec![ext],
+        // module_loader: Some(Rc::new(FsModuleLoader)), // CliModuleLoader, TypescriptModuleLoader, NoopModuleLoader, EmbeddedModuleLoader {
+        extensions: vec![
+            ext,
+            deno_console::init(),
+            deno_crypto::init(),
+            deno_ffi::init(),
+            deno_http::init(),
+            deno_net::init(),
+            deno_tls::init(),
+            deno_url::init(),
+            deno_webgpu::init(),
+            deno_webidl::init(),
+            deno_websocket::init(),
+            deno_webstorage::init(),
+            deno_fetch::init::<Permissions>(Default::default()),
+            deno_web::init::<Permissions>(
+                deno_web::BlobStore::default(),
+                Default::default(),
+            ),
+            deno_broadcast_channel::init(
+                deno_broadcast_channel::InMemoryBroadcastChannel::default(),
+                false, // No --unstable.
+            ),
+            // 
+                // deno_webidl::init(),
+                // deno_console::init(),
+                // deno_url::init(),
+                // deno_tls::init(),
+                // deno_fetch::init::<Permissions>(Default::default()),
+                // deno_websocket::init::<Permissions>("".to_owned(), None, None),
+                // deno_webstorage::init(None),
+                // deno_crypto::init(None),
+                // deno_webgpu::init(false),
+                // deno_ffi::init::<Permissions>(false),
+                // deno_net::init::<Permissions>(
+                //     None, false, // No --unstable.
+                //     None,
+                // ),
+                // deno_http::init(),
+        ],
         ..Default::default()
     });
     unsafe {
         RUNTIME_PTR = &runtime as *const JsRuntime as *mut JsRuntime;
     };
     
+    // https://github.com/tauri-apps/tauri/search?q=tauri%3A%3AWindow   
     // tauri::Builder::default()
-        
     //     .on_page_load(|window, _payload| {
     //         let label = window.label().to_string();
     //         window.listen("clicked".to_string(), move |_payload| {
@@ -121,11 +195,3 @@ fn run_deno(code: String) -> String {
 //     .run(tauri::generate_context!())
 //     .expect("error while running tauri application");
 // }
-
-#[op]
-fn op_sum(nums: Vec<f64>) -> Result<f64, deno_core::error::AnyError> {
-    // Sum inputs
-    let sum = nums.iter().fold(0.0, |a, v| a + v);
-    // return as a Result<f64, AnyError>
-    Ok(sum)
-}
