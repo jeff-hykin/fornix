@@ -63,25 +63,29 @@ fn main() {
         extensions: vec![
             ext,
             deno_console::init(),
-            deno_crypto::init(),
-            deno_ffi::init(),
             deno_http::init(),
-            deno_net::init(),
+            deno_net::init::<Permissions>(
+                None,
+                false, // No --unstable.
+                None,
+            ),
             deno_tls::init(),
             deno_url::init(),
-            deno_webgpu::init(),
             deno_webidl::init(),
-            deno_websocket::init(),
-            deno_webstorage::init(),
             deno_fetch::init::<Permissions>(Default::default()),
             deno_web::init::<Permissions>(
                 deno_web::BlobStore::default(),
                 Default::default(),
             ),
+            deno_websocket::init::<Permissions>("".to_owned(), None, None),
+            deno_webstorage::init(None),
+            deno_crypto::init(None),
+            deno_webgpu::init(false),
             deno_broadcast_channel::init(
                 deno_broadcast_channel::InMemoryBroadcastChannel::default(),
                 false, // No --unstable.
             ),
+            deno_ffi::init::<Permissions>(false),
             // 
                 // deno_webidl::init(),
                 // deno_console::init(),
