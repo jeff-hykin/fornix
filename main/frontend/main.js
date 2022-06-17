@@ -9,7 +9,7 @@ document.body.innerHTML += `<br>${Object.keys(globalThis.tauriApi)}`
 
 const { invoke } = globalThis.tauriApi
 document.body.innerHTML += `<br>invoke: ${invoke}`
-invoke('run_deno', { invokeMessage: 'console.log("howdy from deno!")' }).then(thing=>{
+invoke('run_deno', { invokeMessage: 'Object.keys(Deno)' }).then(thing=>{
     document.body.innerHTML += `<br>thing: ${thing}`
 })
 
