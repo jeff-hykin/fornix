@@ -21,6 +21,7 @@ tauri-macros = "= 1.0.0-rc.4"
 tauri-runtime = "= 0.3.4"
 tauri-runtime-wry = "= 0.3.5"
 deno_core = "0.139.0"
+lazy_static = "1.4.0"
 
 [features]
 default = [ "custom-protocol" ]

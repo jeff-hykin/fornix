@@ -1,8 +1,8 @@
 #!/usr/bin/env -S deno run --allow-all
 
-import { Console, blue } from "https://deno.land/x/quickr@0.3.13/main/console.js"
-import { FileSystem } from "https://deno.land/x/quickr@0.3.13/main/file_system.js"
-import { run, Stdout, returnAsString, Overwrite, Cwd } from "https://deno.land/x/quickr@0.3.13/main/run.js"
+import { Console, blue } from "https://deno.land/x/quickr@0.3.34/main/console.js"
+import { FileSystem } from "https://deno.land/x/quickr@0.3.34/main/file_system.js"
+import { run, Stdout, returnAsString, Overwrite, Cwd } from "https://deno.land/x/quickr@0.3.34/main/run.js"
 import { projectRoot, projectSettings, createWorkspace, tauriSrc } from "../../tauri_support/generate_workspace.js"
 
 // 
@@ -22,7 +22,10 @@ if (!success) {
 // package it into an app
 // 
 if (success) {
-    if (Deno.build.os == "linux") {
+    if (Deno.build.os == "darwin") {
+        await FileSystem.remove(`${tauriSrc}/../target/release/bundle/macos/`)
+        // /Users/jeffhykin/repos/fornix/rw.fornix-tauri_0.1.0_x64.dmg
+    } else if (Deno.build.os == "linux") {
         const systemPackagesInfo = JSON.parse(FileSystem.read(Console.env.__FORNIX_NIX_PATH_EXPORT_FILE))
         const webkitGtkPath = systemPackagesInfo.libPathFor["gnome.webkitgtk"]
         Console.env.LD_LIBRARY_PATH = `${Console.env.LD_LIBRARY_PATH}:${webkitGtkPath}` 
