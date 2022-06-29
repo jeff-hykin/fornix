@@ -70,9 +70,9 @@ in
                 main.project
                 linuxOnly
                 macOnly
-                (main.importMixin 
-                    "salt.nix"
-                )
+                # (main.importMixin 
+                #     "salt.nix"
+                # )
                 (main.importMixin 
                     "rust.nix"
                 )
