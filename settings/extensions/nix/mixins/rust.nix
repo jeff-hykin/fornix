@@ -4,7 +4,7 @@
         # config
         # 
         rustInfo = {
-            version = "nightly-2022-03-09";
+            date = "2022-06-28";
             channel = "nightly";
             targets = [
                 "wasm32-unknown-unknown"
@@ -28,8 +28,6 @@
         # boilerplate
         # 
         # 
-        version = rustInfo.version;
-        
         mozOverlay = (main.import
             (main.fetchTarball
                 ({url=rustInfo.mozOverlayImportUrl;})
@@ -45,12 +43,17 @@
                 overlays = [ mozOverlay ];
             })
         );
-        rustChannel = mainPackagesIncludingRust.rustChannelOf {
-            channel = rustInfo.channel;
-        };
-        rust = (rustChannel.rust.override {
-            targets = rustInfo.targets;
-        });
+        rustChannel = (mainPackagesIncludingRust.rustChannelOf 
+            {
+                date = rustInfo.date;
+                channel = rustInfo.channel;
+            }
+        );
+        rust = (rustChannel.rust.override
+            {
+                targets = rustInfo.targets;
+            }
+        );
         
         # 
         # linux
@@ -154,7 +157,7 @@
                 export PATH="$PATH:$HOME/.cargo/bin"
                 if [[ "$OSTYPE" == "linux-gnu" ]] 
                 then
-                    export PATH="$PATH:$HOME/.rustup/toolchains/$RUSTC_VERSION-x86_64-unknown-linux-gnu/bin/"
+                    export PATH="$PATH:$HOME/.rustup/toolchains/${rustInfo.channel}-x86_64-unknown-linux-gnu/bin/"
                 fi
             '';
             
@@ -167,7 +170,7 @@
             # This can also be fixed by using oxalica/rust-overlay and specifying the rust-src extension
             # See https://discourse.nixos.org/t/rust-src-not-found-and-other-misadventures-of-developing-rust-on-nixos/11570/3?u=samuela. for more details.
             RUST_SRC_PATH = "${main.packages.rust.packages.stable.rustPlatform.rustLibSrc}";
-            RUSTC_VERSION = version;
+            RUSTC_VERSION = "${rustInfo.channel}-${rustInfo.date}";
             # https://github.com/rust-lang/rust-bindgen#environment-variables
             LIBCLANG_PATH = main.packages.lib.makeLibraryPath [ main.packages.llvmPackages_latest.libclang.lib ];
             # Add libvmi precompiled library to rustc search path
