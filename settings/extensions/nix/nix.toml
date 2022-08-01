@@ -127,6 +127,9 @@ load = [ "wrapGAppsHook",]
 # Rust
 # 
 [[packages]]
+load = [ "cargo-cache",]
+
+[[packages]]
 load = [ "cargo-edit",]
 
 [[packages]]
