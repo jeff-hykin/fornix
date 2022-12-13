@@ -7,6 +7,10 @@
 use std::env;
 use std::ptr;
 
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::sync::mpsc::channel;
+
 use deno_core;
 use deno_core::Extension;
 use deno_core::JsRuntime;
@@ -41,7 +45,8 @@ use serde_json::json;
 use std::{thread, time};
 
 static mut RUNTIME_PTR: *mut JsRuntime = ptr::null::<JsRuntime>() as *mut JsRuntime;
-static mut RUNTIME_IN_USE: bool = false;
+// static mut RUNTIME_IN_USE: bool = false;
+let RUNTIME_IN_USE = Arc::new(Mutex::new(0));
 
 #[op]
 fn op_sum(nums: Vec<f64>) -> Result<f64, deno_core::error::AnyError> {
@@ -145,11 +150,8 @@ fn main() {
 #[tauri::command]
 fn run_deno(code: String) -> String {
     unsafe {
-        // some primitive thread blocking (bools are threadsafe right?)
-        while RUNTIME_IN_USE {
-            thread::sleep(time::Duration::from_millis(50));
-        }
-        RUNTIME_IN_USE = true;
+        let mut data = RUNTIME_IN_USE.lock().unwrap(); // unlocks when the function returns
+        
         let context = &mut (*RUNTIME_PTR);
         let result = context.execute_script("<anon>", &code);
         let output = match result {
@@ -167,7 +169,6 @@ fn run_deno(code: String) -> String {
             }
             Err(err) => json!({ "e": format!("{:?}", err)}).to_string(),
         };
-        RUNTIME_IN_USE = false;
         output
     }
 }

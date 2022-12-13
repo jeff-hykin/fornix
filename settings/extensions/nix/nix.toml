@@ -156,9 +156,8 @@ load = [ "cmake",]
 asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isLinux",],]
 
-# [[packages]]
-# load = [ "stdenv", "cc",]
-# onlyIf = [ [ "stdenv", "isLinux",],]
+[[packages]]
+load = [ "stdenv", "cc",]
 
 # 
 # Mac
