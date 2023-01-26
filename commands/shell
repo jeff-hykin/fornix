@@ -118,8 +118,16 @@ if [[ -n "$FORNIX_ARGS" ]]
 then
     # FIXME: I think the single quotes need to be escaped from the arguments (need to iterate over them, escape each one with single quotes)
     # run single command
+    if [ "$FORNIX_DEBUG" = "true" ]; then
+        echo "running nix-shell"
+    fi
     HOME="$FORNIX_HOME" nix-shell --pure --show-trace --run "zsh -c '$FORNIX_ARGS'" "$__temp_var__nix_shell_file" -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz --keep __FORNIX_NIX_SETTINGS_PATH --keep __FORNIX_NIX_MAIN_CODE_PATH --keep __FORNIX_NIX_PACKAGES_FILE_PATH --keep __FORNIX_NIX_PATH_EXPORT_FILE --keep __FORNIX_NIX_COMMANDS --keep FORNIX_FOLDER --keep NIX_STORE_DIR
 else
+    if [ "$FORNIX_DEBUG" = "true" ]; then
+        echo "running nix-shell"
+    fi
+    # run the install right before because it shows output while installing (nix-shell is silent)
+    nix-env -iA "zsh" -f https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz
     HOME="$FORNIX_HOME" nix-shell --pure --show-trace --command "zsh" "$__temp_var__nix_shell_file" -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz --keep __FORNIX_NIX_SETTINGS_PATH --keep __FORNIX_NIX_MAIN_CODE_PATH --keep __FORNIX_NIX_PACKAGES_FILE_PATH --keep __FORNIX_NIX_PATH_EXPORT_FILE --keep __FORNIX_NIX_COMMANDS --keep FORNIX_FOLDER --keep NIX_STORE_DIR
 fi
 if [ "$FORNIX_DEBUG" = "true" ]; then

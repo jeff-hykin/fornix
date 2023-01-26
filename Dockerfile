@@ -141,7 +141,14 @@ RUN useradd --create-home "fornix" --password "fornix" --groups sudo && \
     echo 'fornix ALL = NOPASSWD : ALL' >> /etc/sudoers
 
 # install nix
-RUN curl -Lk https://releases.nixos.org/nix/nix-2.12.0/install | sudo -u fornix sh -s 
+ENV NIX_IGNORE_SYMLINK_STORE "1"
+RUN mkdir -p /fornix/store     && \
+    chown fornix /fornix       && \
+    chown fornix /fornix/store && \
+    ln -s /fornix /nix         && \
+    chown fornix /nix          && \
+    curl -Lk https://releases.nixos.org/nix/nix-2.12.0/install | NIX_IGNORE_SYMLINK_STORE="1" sudo -u fornix --preserve-env="NIX_IGNORE_SYMLINK_STORE" sh -s 
+RUN rm /nix
 RUN echo 'cd /home/fornix/; sudo -u fornix bash; exit'                                 >> /root/.bashrc 
 
 RUN chmod 777 /ros_entrypoint.sh
