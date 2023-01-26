@@ -38,6 +38,68 @@
 
 
 # [[ you can add tools for your project right here or at the bottom ]]
+[[packages]]
+load = [ "docker" ]
+
+# 
+# ogre
+# 
+[[packages]]
+load = [ "libGLU" ]
+
+[[packages]]
+load = [ "libGL" ]
+
+[[packages]]
+load = [ "freetype" ]
+
+[[packages]]
+load = [ "freeimage" ]
+
+[[packages]]
+load = [ "zziplib" ]
+
+[[packages]]
+load = [ "xorg", "xorgproto" ]
+
+[[packages]]
+load = [ "xorg", "libXrandr" ]
+
+[[packages]]
+load = [ "xorg", "libXaw" ]
+
+[[packages]]
+load = [ "freeglut" ]
+
+[[packages]]
+load = [ "xorg", "libXt" ]
+
+[[packages]]
+load = [ "libpng" ]
+
+[[packages]]
+load = [ "boost169" ]
+
+[[packages]]
+load = [ "ois" ]
+
+[[packages]]
+load = [ "xorg", "libX11" ]
+
+[[packages]]
+load = [ "xorg", "libXmu" ]
+
+[[packages]]
+load = [ "xorg", "libSM" ]
+
+[[packages]]
+load = [ "xorg", "libXxf86vm" ]
+
+[[packages]]
+load = [ "xorg", "libICE" ]
+
+[[packages]]
+load = [ "xorg", "libXrender" ]
 
 # 
 # Python
@@ -120,6 +182,11 @@ onlyIf = [ [ "stdenv", "isLinux",],]
 # Mac
 # 
 [[packages]]
+load = [ "darwin", "xcode", ]
+asNativeBuildInput = true
+onlyIf = [ [ "stdenv", "isDarwin",],]
+
+[[packages]]
 load = [ "xcbuild",]
 asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isDarwin",],]
@@ -178,6 +245,215 @@ onlyIf = [ [ "stdenv", "isDarwin",],]
 load = [ "darwin", "apple_sdk", "frameworks", "Security" ]
 asNativeBuildInput = true
 onlyIf = [ [ "stdenv", "isDarwin",],]
+
+# Here's all the MacOS frameworks,
+    # Accelerate
+    # Accessibility
+    # Accounts
+    # AddressBook
+    # AddressBookCore
+    # AdSupport
+    # AGL
+    # AppKit
+    # AppleScriptKit
+    # AppleScriptObjC
+    # ApplicationServices
+    # AppTrackingTransparency
+    # AudioToolbox
+    # AudioToolboxCore
+    # AudioUnit
+    # AudioVideoBridging
+    # AuthenticationServices
+    # AutomaticAssessmentConfiguration
+    # Automator
+    # AVFCapture
+    # AVFCore
+    # AVFoundation
+    # AVKit
+    # BackgroundTasks
+    # BusinessChat
+    # CalendarStore
+    # CallKit
+    # Carbon
+    # CFNetwork
+    # ClassKit
+    # CloudKit
+    # Cocoa
+    # Collaboration
+    # ColorSync
+    # Combine
+    # Contacts
+    # ContactsPersistence
+    # ContactsUI
+    # CoreAudio
+    # CoreAudioKit
+    # CoreAudioTypes
+    # CoreBluetooth
+    # CoreData
+    # CoreDisplay
+    # CoreFoundation
+    # CoreGraphics
+    # CoreHaptics
+    # CoreImage
+    # CoreLocation
+    # CoreMedia
+    # CoreMediaIO
+    # CoreMIDI
+    # CoreMIDIServer
+    # CoreML
+    # CoreMotion
+    # CoreServices
+    # CoreSpotlight
+    # CoreSymbolication
+    # CoreTelephony
+    # CoreText
+    # CoreVideo
+    # CoreWLAN
+    # CryptoKit
+    # CryptoTokenKit
+    # DebugSymbols
+    # DeveloperToolsSupport
+    # DeviceCheck
+    # DirectoryService
+    # DiscRecording
+    # DiscRecordingUI
+    # DiskArbitration
+    # DriverKit
+    # DVDPlayback
+    # EventKit
+    # ExceptionHandling
+    # ExecutionPolicy
+    # ExternalAccessory
+    # FileProvider
+    # FileProviderUI
+    # FinderSync
+    # ForceFeedback
+    # Foundation
+    # FWAUserLib
+    # GameCenterFoundation
+    # GameCenterUI
+    # GameCenterUICore
+    # GameController
+    # GameKit
+    # GameplayKit
+    # GLKit
+    # GLUT
+    # GSS
+    # HIDDriverKit
+    # Hypervisor
+    # ICADevices
+    # IdentityLookup
+    # ImageCaptureCore
+    # ImageIO
+    # IMServicePlugIn
+    # InputMethodKit
+    # InstallerPlugins
+    # InstantMessage
+    # Intents
+    # IOBluetooth
+    # IOBluetoothUI
+    # IOKit
+    # IOSurface
+    # IOUSBHost
+    # iTunesLibrary
+    # JavaNativeFoundation
+    # JavaRuntimeSupport
+    # JavaScriptCore
+    # Kerberos
+    # Kernel
+    # KernelManagement
+    # LatentSemanticMapping
+    # LDAP
+    # LinkPresentation
+    # LocalAuthentication
+    # MapKit
+    # MediaAccessibility
+    # MediaLibrary
+    # MediaPlayer
+    # MediaToolbox
+    # Message
+    # Metal
+    # MetalKit
+    # MetalPerformanceShaders
+    # MetalPerformanceShadersGraph
+    # MetricKit
+    # MLCompute
+    # ModelIO
+    # MultipeerConnectivity
+    # MultitouchSupport
+    # NaturalLanguage
+    # NearbyInteraction
+    # NetFS
+    # Network
+    # NetworkExtension
+    # NetworkingDriverKit
+    # NotificationCenter
+    # OpenAL
+    # OpenCL
+    # OpenDirectory
+    # OpenGL
+    # OSAKit
+    # OSLog
+    # ParavirtualizedGraphics
+    # PassKit
+    # PassKitCore
+    # PCIDriverKit
+    # PCSC
+    # PDFKit
+    # PencilKit
+    # Photos
+    # PhotosUI
+    # PreferencePanes
+    # PushKit
+    # Python
+    # QTKit
+    # Quartz
+    # QuartzCore
+    # QuickLook
+    # QuickLookThumbnailing
+    # RealityKit
+    # ReplayKit
+    # Ruby
+    # SafariServices
+    # SceneKit
+    # ScreenSaver
+    # ScreenTime
+    # ScriptingBridge
+    # Security
+    # SecurityFoundation
+    # SecurityInterface
+    # SensorKit
+    # ServiceManagement
+    # SignpostMetrics
+    # SkyLight
+    # Social
+    # SoundAnalysis
+    # Speech
+    # SpriteKit
+    # StoreKit
+    # SwiftUI
+    # SyncServices
+    # System
+    # SystemConfiguration
+    # SystemExtensions
+    # Tcl
+    # Tk
+    # TWAIN
+    # UIFoundation
+    # UniformTypeIdentifiers
+    # URLFormatting
+    # USBDriverKit
+    # UserNotifications
+    # UserNotificationsUI
+    # VideoDecodeAcceleration
+    # VideoSubscriberAccount
+    # VideoToolbox
+    # Virtualization
+    # Vision
+    # vmnet
+    # WebKit
+    # WidgetKit
+ 
 
 # 
 # both often need

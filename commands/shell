@@ -62,7 +62,40 @@ export FORNIX_ARGS="$@"
 #
 
 # source all the file in settings/during_clean/ in alphabetical order
-. "$FORNIX_FOLDER/settings/extensions/#standard/commands/tools/fornix/trigger" "$FORNIX_FOLDER/settings/during_start_prep"
+which_folder="$FORNIX_FOLDER/settings/during_start_prep"
+# 
+# find and run all the startup scripts in alphabetical order
+#
+# this loop is so stupidly complicated because of many inherent-to-shell reasons, for example: https://stackoverflow.com/questions/13726764/while-loop-subshell-dilemma-in-bash
+if [ "$FORNIX_DEBUG" = "true" ]; then
+    echo "triggering: $(basename "$which_folder")"
+fi
+mkdir -p "$which_folder"
+item_paths=""
+for_each_item_in="$which_folder"
+[ -z "$__NESTED_WHILE_COUNTER" ] && __NESTED_WHILE_COUNTER=0;__NESTED_WHILE_COUNTER="$((__NESTED_WHILE_COUNTER + 1))"; trap 'rm -rf "$__temp_var__temp_folder"' EXIT; __temp_var__temp_folder="$(mktemp -d)"; mkfifo "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER"; (find -L "$for_each_item_in" ! -path . -print0 2>/dev/null | sort -z > "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER" &); while read -d $'\0' each
+do
+    item_paths="$item_paths:$each"
+done < "$__temp_var__temp_folder/pipe_for_while_$__NESTED_WHILE_COUNTER";__NESTED_WHILE_COUNTER="$((__NESTED_WHILE_COUNTER - 1))"
+
+prev_ifs="$IFS"
+desired_ifs=":"
+IFS="$desired_ifs"
+for each in $item_paths; do
+    # check if file exists
+    if [ -f "$each" ]
+    then
+        if [ "$FORNIX_DEBUG" = "true" ]
+        then
+            echo "    loading: $each"
+        fi
+        IFS="$prev_ifs"
+        . "$each" "$@"
+        IFS="$desired_ifs"
+    fi
+done
+IFS="$prev_ifs"
+
 
 # create a dummy home folder to prevent any problems when starting up
 mkdir -p "$FORNIX_HOME/.cache/"
@@ -85,13 +118,13 @@ if [[ -n "$FORNIX_ARGS" ]]
 then
     # FIXME: I think the single quotes need to be escaped from the arguments (need to iterate over them, escape each one with single quotes)
     # run single command
-    HOME="$FORNIX_HOME" nix-shell --pure --show-trace --run "zsh -c '$FORNIX_ARGS'" "$__temp_var__nix_shell_file" -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz --keep __FORNIX_NIX_SETTINGS_PATH --keep __FORNIX_NIX_MAIN_CODE_PATH --keep __FORNIX_NIX_PACKAGES_FILE_PATH --keep __FORNIX_NIX_PATH_EXPORT_FILE --keep __FORNIX_NIX_COMMANDS --keep FORNIX_FOLDER
+    HOME="$FORNIX_HOME" nix-shell --pure --show-trace --run "zsh -c '$FORNIX_ARGS'" "$__temp_var__nix_shell_file" -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz --keep __FORNIX_NIX_SETTINGS_PATH --keep __FORNIX_NIX_MAIN_CODE_PATH --keep __FORNIX_NIX_PACKAGES_FILE_PATH --keep __FORNIX_NIX_PATH_EXPORT_FILE --keep __FORNIX_NIX_COMMANDS --keep FORNIX_FOLDER --keep NIX_STORE_DIR
 else
-    HOME="$FORNIX_HOME" nix-shell --pure --show-trace --command "zsh" "$__temp_var__nix_shell_file" -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz --keep __FORNIX_NIX_SETTINGS_PATH --keep __FORNIX_NIX_MAIN_CODE_PATH --keep __FORNIX_NIX_PACKAGES_FILE_PATH --keep __FORNIX_NIX_PATH_EXPORT_FILE --keep __FORNIX_NIX_COMMANDS --keep FORNIX_FOLDER
+    HOME="$FORNIX_HOME" nix-shell --pure --show-trace --command "zsh" "$__temp_var__nix_shell_file" -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz --keep __FORNIX_NIX_SETTINGS_PATH --keep __FORNIX_NIX_MAIN_CODE_PATH --keep __FORNIX_NIX_PACKAGES_FILE_PATH --keep __FORNIX_NIX_PATH_EXPORT_FILE --keep __FORNIX_NIX_COMMANDS --keep FORNIX_FOLDER --keep NIX_STORE_DIR
 fi
 if [ "$FORNIX_DEBUG" = "true" ]; then
     echo "exited the nix-shell environment"
-    echo "(Tools/Commands mentioned in 'settings/extensions/nix/nix.toml' are no longer available/installed)"
+    echo '(Tools/Commands mentioned in "settings/extensions/nix/nix.toml" are no longer available/installed)'
     echo ""
     echo "switched from Zsh back to Bash"
     echo "finished: $FORNIX_COMMANDS_FOLDER"shell

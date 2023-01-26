@@ -201,7 +201,7 @@ fi
 . "$FORNIX_FOLDER/settings/extensions/nix/commands/ensure_nix_installed"
 
 # just start the shell with no arguments (arguments might be supported in the future)
-"$FORNIX_COMMANDS_FOLDER/shell"
+. "$FORNIX_COMMANDS_FOLDER/shell"
 if [ "$FORNIX_DEBUG" = "true" ]; then
     echo "finished: $FORNIX_COMMANDS_FOLDER"start
 fi

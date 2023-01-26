@@ -20,7 +20,6 @@ let
             ("__FORNIX_NIX_MAIN_CODE_PATH")
         )
     );
-    snowball = import (builtins.fetchurl "https://raw.githubusercontent.com/jeff-hykin/snowball/29a4cb39d8db70f9b6d13f52b3a37a03aae48819/snowball.nix");
     
     # just a helper
     emptyOptions = ({
@@ -119,13 +118,7 @@ let
         '';
     }) else emptyOptions;
     
-# using the above definitions
-in
-    # 
-    # create a shell
-    # 
-    (main.packages.mkShell
-        (main.mergeMixins
+    mergedItems = (main.mergeMixins
             [
                 main.project
                 linuxOnly
@@ -141,6 +134,7 @@ in
                     shellHook = ''
                         # provide access to ncurses for nice terminal interactions
                         export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${main.packages.ncurses5}/lib"
+                        export LD_LIBRARY_PATH="${main.makeLibraryPath [ main.packages.libglvnd ] }:$LD_LIBRARY_PATH"
                         export LD_LIBRARY_PATH="${main.makeLibraryPath [ main.packages.glib ] }:$LD_LIBRARY_PATH"
                         
                         if [ "$FORNIX_DEBUG" = "true" ]; then
@@ -148,8 +142,19 @@ in
                             echo ""
                             echo "Tools/Commands mentioned in 'settings/extensions/nix/nix.toml' are now available/installed"
                         fi
+                        
+                        PATH="$PATH:/usr/bin"
+                        export PATH="$PATH/$HOME/.local/bin"
                     '';
                 })
             ]
         )
-    )
+    ;
+    
+# using the above definitions
+in
+    main.packages.mkShell {
+        nativeBuildInputs = mergedItems.nativeBuildInputs;
+        buildInputs = mergedItems.buildInputs;
+        shellHook = mergedItems.shellHook;
+    }

@@ -213,7 +213,7 @@ fi
     then
         . "$HOME/.nix-profile/etc/profile.d/nix.sh"
     fi
-    export PATH="$PATH:/nix/var/nix/profiles/default/bin/"
+    export PATH="$PATH:/nix/var/nix/profiles/default/bin/:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"
     export NIXPKGS_ALLOW_UNFREE=1
 
 # if nix is still not installed
