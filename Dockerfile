@@ -179,5 +179,7 @@ RUN  sudo apt-get update && sudo apt-get install -q -y --no-install-recommends \
     curl \
     tree
     
+RUN  yes | unminimize
+
 ENTRYPOINT ["/root/.bash_profile"]
 CMD ["bash"]
