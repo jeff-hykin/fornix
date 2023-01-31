@@ -21,6 +21,26 @@ let
         )
     );
     
+    # 
+    # load ROS packages
+    # 
+    rosPackages = (builtins.import
+        (builtins.fetchTarball 
+            ({
+                url = "https://github.com/jeff-hykin/nix-ros-overlay/archive/ce8c6459503b5440f2a64379753f3e7ed107b201.tar.gz";
+            })
+        )
+        ({})
+    ).rosPackages;
+    rosNativeBuildInput = (rosPackages.humble.buildEnv {
+        paths = [
+            rosPackages.humble.ros-environment
+            # rosPackages.humble.ros2topic
+            # rosPackages.humble.ros2node
+            # rosPackages.humble.geometry-msgs
+        ];
+    });
+    
     # just a helper
     emptyOptions = ({
         buildInputs = [];
@@ -128,7 +148,9 @@ let
                     # inside that shell, make sure to use these packages
                     buildInputs = [];
                     
-                    nativeBuildInputs = [];
+                    nativeBuildInputs = [
+                        rosNativeBuildInput
+                    ];
                     
                     # run some bash code before starting up the shell
                     shellHook = ''

@@ -78,7 +78,16 @@ then
     ' > "$docker_home/.gitconfig"
     
     build_docker() {
-        docker build -t "docker.io/library/fornix:Dockerfile" . | grep 'no space left on device.' && docker volume rm $(docker volume ls -qf dangling=true)
+        outcome="bad"
+        docker build -t "docker.io/library/fornix:Dockerfile" . 2>&1 | tee -a "$TMPDIR/error"  && outcome="good"
+        # clear space
+        cat "$TMPDIR/error" | grep 'no space left on device.' && docker volume rm `docker volume ls -q -f dangling=true`
+        if [ "$outcome" = "good" ]
+        then
+            return 0
+        else
+            return 1
+        fi
     }
     
     system_tools_hash="$(
