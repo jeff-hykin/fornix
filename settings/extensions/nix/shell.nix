@@ -27,7 +27,7 @@ let
     rosPackages = (builtins.import
         (builtins.fetchTarball 
             ({
-                url = "https://github.com/jeff-hykin/nix-ros-overlay/archive/ce8c6459503b5440f2a64379753f3e7ed107b201.tar.gz";
+                url = "https://github.com/jeff-hykin/nix-ros-overlay/archive/5e2d7097caad7bc5cf43f90fbd3aedd2ca91e5d0.tar.gz";
             })
         )
         ({})
@@ -35,9 +35,9 @@ let
     rosNativeBuildInput = (rosPackages.humble.buildEnv {
         paths = [
             rosPackages.humble.ros-environment
-            # rosPackages.humble.ros2topic
-            # rosPackages.humble.ros2node
-            # rosPackages.humble.geometry-msgs
+            rosPackages.humble.ros2topic
+            rosPackages.humble.ros2node
+            rosPackages.humble.geometry-msgs
         ];
     });
     

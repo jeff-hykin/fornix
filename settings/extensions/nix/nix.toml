@@ -120,6 +120,9 @@ load = [ "python38Packages", "virtualenv",]
 load = [ "python38Packages", "wheel",]
 
 [[packages]]
+load = [ "python38Packages", "poetry",]
+
+[[packages]]
 load = [ "cmake",]
 
 [[packages]]

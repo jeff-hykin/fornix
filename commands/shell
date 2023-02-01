@@ -97,15 +97,16 @@ done
 IFS="$prev_ifs"
 
 
-# create a dummy home folder to prevent any problems when starting up
 mkdir -p "$FORNIX_HOME/.cache/"
 # connect the nix cache to prevent duplicates
+if ! [ -d "$HOME/.cache/nix/" ]
+then
+    mkdir -p "$HOME/.cache/nix/"
+fi
+
 rm -rf "$FORNIX_HOME/.cache/nix" 2>/dev/null
 rm -f "$FORNIX_HOME/.cache/nix" 2>/dev/null
-if [ -d "$HOME/.cache/nix/" ]
-then
-    ln -s "$HOME/.cache/nix/" "$FORNIX_HOME/.cache/nix"
-fi
+ln -s "$HOME/.cache/nix/" "$FORNIX_HOME/.cache/nix"
 
 # if there are arguments, treat it as a run command
 if [ "$FORNIX_DEBUG" = "true" ]; then

@@ -79,9 +79,11 @@ then
     
     build_docker() {
         outcome="bad"
-        docker build -t "docker.io/library/fornix:Dockerfile" . 2>&1 | tee -a "$TMPDIR/error"  && outcome="good"
+        set -o pipefail
+        { docker build -t "fornix:Dockerfile" . 2>&1 | tee -a "$TMPDIR/docker_log"; } && outcome="good"
+        set +o pipefail
         # clear space
-        cat "$TMPDIR/error" | grep 'no space left on device.' && docker volume rm `docker volume ls -q -f dangling=true`
+        cat "$TMPDIR/docker_log" | grep 'no space left on device.' && docker volume rm `docker volume ls -q -f dangling=true`
         if [ "$outcome" = "good" ]
         then
             return 0
@@ -123,7 +125,7 @@ then
         #         --volume "$docker_home":/home/fornix \
         #         --volume "$fornix_storage":/external \
         #         --volume "$fornix_cache":/home/fornix/.cache/nix \
-        #         -it 'docker.io/library/fornix:Dockerfile' \
+        #         -it 'fornix:Dockerfile' \
         #         "cd /home/fornix/project; sudo -u fornix bash -c '. /home/fornix/.bashrc'; exit"
         # fi
         
@@ -133,10 +135,10 @@ then
         echo "    DOCKER: run interactively"
         docker run \
             --rm \
+            --volume "$fornix_cache":/home/fornix/.cache/nix \
             --volume "$PWD":/home/fornix/project \
             --volume "$docker_home":/home/fornix \
-            --volume "$fornix_cache":/home/fornix/.cache/nix \
-            -i --tty=true 'docker.io/library/fornix:Dockerfile' \
+            -i --tty=true 'fornix:Dockerfile' \
             "cd /home/fornix/project; sudo -u fornix bash -c 'commands/start'; exit"
             # --volume "$fornix_storage":/external \
             # --volume "$fornix_storage/nix":/nix \

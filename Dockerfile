@@ -167,10 +167,10 @@ RUN  yes | unminimize
 RUN echo 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"' >> /home/fornix/.bashrc
 # build a cache up for nixpkgs (and yes, it doesn't load the bashrc so the path has to be set every time)
 RUN \
-    sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.cowsay -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz' && \
     sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.cowsay -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/ce6aa13369b667ac2542593170993504932eb836.tar.gz' && \
+    sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.zsh -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz' && \
     sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.unixtools.ifconfig -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/528d35bec0cb976a06cc0e8487c6e5136400b16b.tar.gz' && \
-    sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-shell -I nix-ros-overlay=https://github.com/jeff-hykin/nix-ros-overlay/archive/ce8c6459503b5440f2a64379753f3e7ed107b201.tar.gz --option extra-substituters "https://ros.cachix.org"  --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo="  "<nix-ros-overlay/examples/turtlebot3-gazebo.nix>"'
+    sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-shell -I nix-ros-overlay=https://github.com/jeff-hykin/nix-ros-overlay/archive/5e2d7097caad7bc5cf43f90fbd3aedd2ca91e5d0.tar.gz --option extra-substituters "https://ros.cachix.org"  --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo="  "<nix-ros-overlay/examples/turtlebot3-gazebo.nix>"'
 
 
 COPY ./commands /home/fornix/project/commands
