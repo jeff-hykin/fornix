@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# prune dangling volumes (basically always safe)
+docker volume rm `docker volume ls -q -f dangling=true`
+
+# ! prune containers
+docker container prune
+
+# (VERY AGRESSIVE) remove images not being used by any ACTIVE container
+docker rmi -f $(docker images -q)
