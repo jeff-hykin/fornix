@@ -35,9 +35,9 @@ let
     rosNativeBuildInput = (rosPackages.humble.buildEnv {
         paths = [
             rosPackages.humble.ros-environment
-            rosPackages.humble.ros2topic
-            rosPackages.humble.ros2node
-            rosPackages.humble.geometry-msgs
+            # rosPackages.humble.ros2topic
+            # rosPackages.humble.ros2node
+            # rosPackages.humble.geometry-msgs
         ];
     });
     
