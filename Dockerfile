@@ -130,60 +130,62 @@
 #         fi \
 #     fi
 
-FROM docker.io/library/ros:latest@sha256:187938e57357e2e1180ada88ddeb89bd54c156e444d09a1d92442c804c1cdf96
+# FROM docker.io/library/ros:latest@sha256:187938e57357e2e1180ada88ddeb89bd54c156e444d09a1d92442c804c1cdf96
 
-# setup a normal user
-RUN useradd --create-home "fornix" --password "fornix" --groups sudo && \
-    echo 'fornix ALL = NOPASSWD : ALL' >> /etc/sudoers
+# # setup a normal user
+# RUN useradd --create-home "fornix" --password "fornix" --groups sudo && \
+#     echo 'fornix ALL = NOPASSWD : ALL' >> /etc/sudoers
 
-# install nix
-ENV NIX_IGNORE_SYMLINK_STORE "1"
-# RUN mkdir -p /fornix/store     && \
-#     chown fornix /fornix       && \
-#     chown fornix /fornix/store && \
-#     ln -s /fornix /nix         && \
-#     chown fornix /nix          && \
-#     curl -Lk https://releases.nixos.org/nix/nix-2.12.0/install | NIX_IGNORE_SYMLINK_STORE="1" sudo -u fornix --preserve-env="NIX_IGNORE_SYMLINK_STORE" sh -s 
-RUN  sudo apt-get update && sudo apt-get install -q -y --no-install-recommends \
-    curl \
-    rsync \
-    tree \
-    lsof
+# # install nix
+# ENV NIX_IGNORE_SYMLINK_STORE "1"
+# # RUN mkdir -p /fornix/store     && \
+# #     chown fornix /fornix       && \
+# #     chown fornix /fornix/store && \
+# #     ln -s /fornix /nix         && \
+# #     chown fornix /nix          && \
+# #     curl -Lk https://releases.nixos.org/nix/nix-2.12.0/install | NIX_IGNORE_SYMLINK_STORE="1" sudo -u fornix --preserve-env="NIX_IGNORE_SYMLINK_STORE" sh -s 
+# RUN  sudo apt-get update && sudo apt-get install -q -y --no-install-recommends \
+#     curl \
+#     rsync \
+#     tree \
+#     lsof
 
-RUN echo '#!/bin/bash'                                        >  /root/.bash_profile && \
-    echo 'echo "$@"                                              ' >> /root/.bash_profile && \
-    echo 'if [ "$@" = "bash" ]                                   ' >> /root/.bash_profile && \
-    echo 'then                                                   ' >> /root/.bash_profile && \
-    echo '    cd /home/fornix/project; sudo -u fornix bash; exit ' >> /root/.bash_profile && \
-    echo 'else                                                   ' >> /root/.bash_profile && \
-    echo '    args="$@"                                          ' >> /root/.bash_profile && \
-    echo '    bash -c "$args"                                    ' >> /root/.bash_profile && \
-    echo 'fi                                                     ' >> /root/.bash_profile && \
-    echo
-RUN chmod 777 /root/.bash_profile
+# RUN echo '#!/bin/bash'                                        >  /root/.bash_profile && \
+#     echo 'echo "$@"                                              ' >> /root/.bash_profile && \
+#     echo 'if [ "$@" = "bash" ]                                   ' >> /root/.bash_profile && \
+#     echo 'then                                                   ' >> /root/.bash_profile && \
+#     echo '    cd /home/fornix/project; sudo -u fornix bash; exit ' >> /root/.bash_profile && \
+#     echo 'else                                                   ' >> /root/.bash_profile && \
+#     echo '    args="$@"                                          ' >> /root/.bash_profile && \
+#     echo '    bash -c "$args"                                    ' >> /root/.bash_profile && \
+#     echo 'fi                                                     ' >> /root/.bash_profile && \
+#     echo
+# RUN chmod 777 /root/.bash_profile
 
-RUN curl -Lk https://releases.nixos.org/nix/nix-2.12.0/install | sudo -u fornix sh -s
-RUN  yes | unminimize
-RUN echo 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"' >> /home/fornix/.bashrc
-# build a cache up for nixpkgs (and yes, it doesn't load the bashrc so the path has to be set every time)
-RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.cowsay -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/ce6aa13369b667ac2542593170993504932eb836.tar.gz'
-RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.zsh -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz' 
-RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.unixtools.ifconfig -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/528d35bec0cb976a06cc0e8487c6e5136400b16b.tar.gz' 
-RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-shell -I nix-ros-overlay=https://github.com/jeff-hykin/nix-ros-overlay/archive/5e2d7097caad7bc5cf43f90fbd3aedd2ca91e5d0.tar.gz --option extra-substituters "https://ros.cachix.org"  --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo="  "<nix-ros-overlay/examples/turtlebot3-gazebo.nix>"'
-
-
-COPY ./commands /home/fornix/project/commands
-COPY ./settings/fornix_core         /home/fornix/project/settings/fornix_core
-COPY ./settings/during_clean        /home/fornix/project/settings/during_clean
-COPY ./settings/during_manual_start /home/fornix/project/settings/during_manual_start
-COPY ./settings/during_purge        /home/fornix/project/settings/during_purge
-COPY ./settings/extensions          /home/fornix/project/settings/extensions
-COPY ./settings/requirements        /home/fornix/project/settings/requirements
-COPY ./settings/during_start        /home/fornix/project/settings/during_start
-COPY ./settings/home                /home/fornix/project/settings/home
-COPY ./settings/during_start_prep   /home/fornix/project/settings/during_start_prep
-RUN cd /home/fornix/project/  && echo "exit" | sudo -u fornix commands/start
+# RUN curl -Lk https://releases.nixos.org/nix/nix-2.12.0/install | sudo -u fornix sh -s
+# RUN  yes | unminimize
+# RUN echo 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"' >> /home/fornix/.bashrc
+# # build a cache up for nixpkgs (and yes, it doesn't load the bashrc so the path has to be set every time)
+# RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.cowsay -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/ce6aa13369b667ac2542593170993504932eb836.tar.gz'
+# RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.zsh -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/a7ecde854aee5c4c7cd6177f54a99d2c1ff28a31.tar.gz' 
+# RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-env -iA nixpkgs.unixtools.ifconfig -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/528d35bec0cb976a06cc0e8487c6e5136400b16b.tar.gz' 
+# RUN sudo -u fornix bash -c 'export PATH="$PATH:/nix/var/nix/profiles/per-user/$(whoami)/profile/bin/"; nix-shell -I nix-ros-overlay=https://github.com/jeff-hykin/nix-ros-overlay/archive/5e2d7097caad7bc5cf43f90fbd3aedd2ca91e5d0.tar.gz --option extra-substituters "https://ros.cachix.org"  --option trusted-public-keys "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= ros.cachix.org-1:dSyZxI8geDCJrwgvCOHDoAfOm5sV1wCPjBkKL+38Rvo="  "<nix-ros-overlay/examples/turtlebot3-gazebo.nix>"'
 
 
-ENTRYPOINT ["/root/.bash_profile"]
-CMD ["bash"]
+# COPY ./commands /home/fornix/project/commands
+# COPY ./settings/fornix_core         /home/fornix/project/settings/fornix_core
+# COPY ./settings/during_clean        /home/fornix/project/settings/during_clean
+# COPY ./settings/during_manual_start /home/fornix/project/settings/during_manual_start
+# COPY ./settings/during_purge        /home/fornix/project/settings/during_purge
+# COPY ./settings/extensions          /home/fornix/project/settings/extensions
+# COPY ./settings/requirements        /home/fornix/project/settings/requirements
+# COPY ./settings/during_start        /home/fornix/project/settings/during_start
+# COPY ./settings/home                /home/fornix/project/settings/home
+# COPY ./settings/during_start_prep   /home/fornix/project/settings/during_start_prep
+# RUN cd /home/fornix/project/  && echo "exit" | sudo -u fornix commands/start
+
+
+# ENTRYPOINT ["/root/.bash_profile"]
+# CMD ["bash"]
+
+FROM jeffhykin/m1_ros_noetic_nixpkgs:Dockerfile@sha256:188a15b979bde209388748ecf054836d8fd8f865622402aea819998fee9ef5d6
