@@ -32,10 +32,12 @@ let
         )
         ({})
     ).rosPackages;
-    rosNativeBuildInput = (rosPackages.humble.buildEnv {
+    rosNativeBuildInput = (rosPackages.noetic.buildEnv {
         paths = [
-            rosPackages.humble.ros-environment
-            # rosPackages.humble.ros2topic
+            rosPackages.noetic.ros-environment
+            rosPackages.noetic.turtlesim
+            rosPackages.noetic.roslaunch
+            rosPackages.noetic.rosbash
             # rosPackages.humble.ros2node
             # rosPackages.humble.geometry-msgs
         ];
@@ -57,6 +59,7 @@ let
         shellHook = ''
             if [[ "$OSTYPE" == "linux-gnu" ]] 
             then
+                export __path_for_ros='${rosNativeBuildInput}'
                 true # add important (LD_LIBRARY_PATH, PATH, etc) nix-Linux code here
                 export EXTRA_CCFLAGS="$EXTRA_CCFLAGS:-I/usr/include"
             fi

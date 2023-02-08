@@ -189,3 +189,15 @@
 # CMD ["bash"]
 
 FROM jeffhykin/m1_ros_noetic_nixpkgs:Dockerfile@sha256:188a15b979bde209388748ecf054836d8fd8f865622402aea819998fee9ef5d6
+
+# COPY ./commands /home/fornix/project/commands
+# COPY ./settings/fornix_core         /home/fornix/project/settings/fornix_core
+# COPY ./settings/during_clean        /home/fornix/project/settings/during_clean
+# COPY ./settings/during_manual_start /home/fornix/project/settings/during_manual_start
+# COPY ./settings/during_purge        /home/fornix/project/settings/during_purge
+# COPY ./settings/extensions          /home/fornix/project/settings/extensions
+# COPY ./settings/requirements        /home/fornix/project/settings/requirements
+# COPY ./settings/during_start        /home/fornix/project/settings/during_start
+# COPY ./settings/home                /home/fornix/project/settings/home
+# COPY ./settings/during_start_prep   /home/fornix/project/settings/during_start_prep
+# RUN cd /home/fornix/project/  && echo "exit" | sudo -u fornix commands/start

@@ -139,7 +139,7 @@ then
             --volume "$PWD":/home/fornix/project \
             --volume "$docker_home":/home/fornix \
             -i --tty=true 'fornix:Dockerfile' \
-            "cd /home/fornix/project; sudo -u fornix bash -c 'commands/start'; exit"
+            "cd /home/fornix/project; sudo -u fornix bash -c 'commands/start'; echo 'exiting nix-shell, entering raw docker bash'; sudo -u fornix bash"
             # --volume "$fornix_storage":/external \
             # --volume "$fornix_storage/nix":/nix \
         echo 
