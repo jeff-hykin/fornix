@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+tag_as="ubuntu_20_04"
+repo="jeffhykin/m1_ros_noetic_nixpkgs"
+local_name="fornix:noetic"
+
+sudo docker tag fornix:noetic "$repo:$tag_as"
+docker push "$repo:$tag_as"

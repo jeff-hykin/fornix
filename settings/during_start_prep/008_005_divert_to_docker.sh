@@ -80,7 +80,7 @@ then
     build_docker() {
         outcome="bad"
         set -o pipefail
-        { docker build -t "fornix:Dockerfile" . 2>&1 | tee -a "$TMPDIR/docker_log"; } && outcome="good"
+        { docker build -t "fornix:noetic" . 2>&1 | tee -a "$TMPDIR/docker_log"; } && outcome="good"
         set +o pipefail
         # clear space
         cat "$TMPDIR/docker_log" | grep 'no space left on device.' && docker volume rm `docker volume ls -q -f dangling=true`
@@ -125,7 +125,7 @@ then
         #         --volume "$docker_home":/home/fornix \
         #         --volume "$fornix_storage":/external \
         #         --volume "$fornix_cache":/home/fornix/.cache/nix \
-        #         -it 'fornix:Dockerfile' \
+        #         -it 'fornix:noetic' \
         #         "cd /home/fornix/project; sudo -u fornix bash -c '. /home/fornix/.bashrc'; exit"
         # fi
         
@@ -138,8 +138,8 @@ then
             --volume "$fornix_cache":/home/fornix/.cache/nix \
             --volume "$PWD":/home/fornix/project \
             --volume "$docker_home":/home/fornix \
-            -i --tty=true 'fornix:Dockerfile' \
-            "cd /home/fornix/project; sudo -u fornix bash -c 'commands/start'; echo 'exiting nix-shell, entering raw docker bash'; sudo -u fornix bash"
+            -i --tty=true 'fornix:noetic' \
+            "ls /home/fornix/project && cd /home/fornix/project; sudo -u fornix bash -c 'commands/start'; echo 'exiting nix-shell, entering raw docker bash'; sudo -u fornix bash -ic 'zsh'"
             # --volume "$fornix_storage":/external \
             # --volume "$fornix_storage/nix":/nix \
         echo 

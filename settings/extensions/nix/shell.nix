@@ -27,7 +27,7 @@ let
     rosPackages = (builtins.import
         (builtins.fetchTarball 
             ({
-                url = "https://github.com/jeff-hykin/nix-ros-overlay/archive/5e2d7097caad7bc5cf43f90fbd3aedd2ca91e5d0.tar.gz";
+                url = "https://github.com/jeff-hykin/nix-ros-overlay/archive/84053f5a53d16b578f5a13fbb202af7472be5bcf.tar.gz";
             })
         )
         ({})
@@ -38,6 +38,10 @@ let
             rosPackages.noetic.turtlesim
             rosPackages.noetic.roslaunch
             rosPackages.noetic.rosbash
+            rosPackages.noetic.catkin
+            rosPackages.noetic.moveit-commander
+            rosPackages.noetic.moveit
+            # python3.catkin-tools python3-osrf-pycommon
             # rosPackages.humble.ros2node
             # rosPackages.humble.geometry-msgs
         ];

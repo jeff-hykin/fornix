@@ -7,6 +7,8 @@ __fornix_roscore_pid="$!" # PID of backgrounded-task above
 function exit {
     emulate -L zsh
     kill "$__fornix_roscore_pid" || kill -9 "$__fornix_roscore_pid"
+    echo 
+    echo 
     builtin exit "$@"
 }
 # test command: rosrun turtlesim turtlesim_node
