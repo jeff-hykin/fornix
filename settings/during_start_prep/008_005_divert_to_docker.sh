@@ -138,6 +138,7 @@ then
             --volume "$fornix_cache":/home/fornix/.cache/nix \
             --volume "$PWD":/home/fornix/project \
             --volume "$docker_home":/home/fornix \
+            -p 5900:5900 \
             -i --tty=true 'fornix:noetic' \
             "ls /home/fornix/project && cd /home/fornix/project; sudo -u fornix bash -c 'commands/start'; echo 'exiting nix-shell, entering raw docker bash'; sudo -u fornix bash -ic 'zsh'"
             # --volume "$fornix_storage":/external \
