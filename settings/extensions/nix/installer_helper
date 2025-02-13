@@ -24,7 +24,7 @@ fi
 # default nix_version
 if [ -z "$nix_version" ]
 then
-    nix_version="2.11.1"
+    nix_version="2.18.1"
 fi
 
 # default install_repo=true
@@ -60,6 +60,7 @@ else
     if ! [ -z "$(command -v "nix")" ]; then
         nix_is_installed="true"
     else
+        echo attempting to install nix, since it seems not to be installed
         # 
         # make sure xcode tools are installed on MacOS
         # 
@@ -92,8 +93,6 @@ else
             fi
             echo "passed xcode tools installed"
         fi
-
-        # TODO: add a check/option for a corrupted nix install
 
         if ! [ -d "/nix/store" ]; then
             echo "|------------------------------------------------------|" 1>&2
@@ -237,7 +236,7 @@ else
                         curl -Lk https://releases.nixos.org/nix/nix-$nix_version/install | sh -s
                     fi
                 fi
-            fi    
+            fi
         fi
         
         # 
@@ -257,22 +256,29 @@ else
             # if nix-env doesnt exist
             if [ -z "$(command -v "nix-env")" ] || [ -z "$(command -v "nix-shell")" ]; then
                 echo "$light_yellow"
-                echo "|-- Action Needed ------------------------------------------------------------------------------| $color_reset" 1>&2
-                echo "|                                                                                               |" 1>&2
-                echo "|    - Try closing/reopening your terminal and running this command again                       |" 1>&2
-                echo "|      (I dont see the nix-env and nix-shell command)                                           |" 1>&2
-                echo "|                                                                                               |" 1>&2
-                echo "|    - If you already did that, and you're still getting this message                           |" 1>&2
-                echo "|      then you might need to uninstall and reinstall nix                                       |" 1>&2
-                echo "|      instructions here:                                                                       |" 1>&2
-                echo "|         https://nixos.org/manual/nix/stable/#sect-single-user-installation                    |" 1>&2
+                echo "|-- Action Needed ----------------------------------------------------------------------------------| $color_reset" 1>&2
+                echo "|                                                                                                   |" 1>&2
+                echo "|    - Try closing/reopening your terminal and running this command again                           |" 1>&2
+                echo "|      (I dont see the nix-env and nix-shell command)                                               |" 1>&2
+                echo "|                                                                                                   |" 1>&2
+                echo "|    - If you already did that, and you're still getting this message                               |" 1>&2
+                echo "|      then you might need to uninstall and reinstall nix                                           |" 1>&2
+                echo "|      instructions here:                                                                           |" 1>&2
+                echo "|         https://nixos.org/manual/nix/stable/#sect-single-user-installation                        |" 1>&2
                 # check if file exists
                 if [ -f "./settings/extensions/nix/uninstaller_helper" ]; then
-                    echo "|      automated script for purging dangling/leftover installation parts here:                  |" 1>&2
-                    echo "|         . \"./settings/extensions/nix/uninstaller_helper\"                                    |" 1>&2
+                    echo "|      automated script for purging dangling/leftover installation parts here:                          |" 1>&2
+                    echo "|         . \"./settings/extensions/nix/uninstaller_helper\"                                            |" 1>&2
                 fi
-                echo "|                                                                                               |" 1>&2
-                echo "|-----------------------------------------------------------------------------------------------|" 1>&2
+                echo "|                                                                                                   |" 1>&2
+                echo "|    - Whats weird about your situation is that /nix/store exists. Meaning the                      |" 1>&2
+                echo "|      folder structure is there, but the nix command is not available to me.                       |" 1>&2
+                echo "|      This suggests a corrupted install.                                                           |" 1>&2
+                echo "|                                                                                                   |" 1>&2
+                echo "|    - I've made an imperfect, but often good enough un-installer here:                             |" 1>&2
+                echo "|      https://github.com/jeff-hykin/fornix/blob/master/settings/extensions/nix/uninstaller_helper  |" 1>&2
+                echo "|                                                                                                   |" 1>&2
+                echo "|---------------------------------------------------------------------------------------------------|" 1>&2
                 echo ""
             else
                 nix_is_installed="true"
