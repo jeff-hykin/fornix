@@ -24,7 +24,7 @@ fi
 # default nix_version
 if [ -z "$nix_version" ]
 then
-    nix_version="2.18.1"
+    nix_version="2.11.1"
 fi
 
 # default install_repo=true
